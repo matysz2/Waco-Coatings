@@ -1,0 +1,65 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Grupa nawigacyjna -->
+    <group android:id="@+id/nav_group_pricing">
+        <!-- Tytuł grupy cennika -->
+        <item
+            android:title="CENNIK"
+            android:enabled="false"
+            />
+
+        <item
+            android:id="@+id/nav_pod"
+            android:title="PODKŁADY"
+            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+
+        <item
+            android:id="@+id/nav_kon"
+            android:title="KONWENTERY"
+            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+
+        <item
+            android:id="@+id/nav_lak"
+            android:title="LAKIERY"
+            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+
+        <item
+            android:id="@+id/nav_kat"
+            android:title="KATALIZATORY"
+            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+
+        <item
+            android:id="@+id/nav_roz"
+            android:title="ROZPUSZCZALNIKI"
+            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+    </group>
+
+    <!-- Grupa wylogowania -->
+    <group android:id="@+id/nav_group_color">
+        <item
+            android:title="CENNIK KOLORÓW"
+            android:enabled="false"
+            android:icon="@drawable/dollar" />
+
+        <item
+            android:id="@+id/nav_polysk"
+            android:title="KOLORY POŁYSK"
+            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+
+        <item
+            android:id="@+id/nav_polmat"
+            android:title="KOLORY PÓŁMAT"
+            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+
+        <item
+            android:id="@+id/nav_mat"
+            android:title="KOLORY MAT"
+            android:icon="@drawable/dollar" /><!-- Ikona Androida -->
+    </group>
+
+    <group android:id="@+id/nav_group_exit">
+        <item
+            android:id="@+id/nav_finish"
+            android:title="WYJDŹ"
+            android:icon="@drawable/exit" /> <!-- Ikona Androida -->
+    </group>
+</menu>

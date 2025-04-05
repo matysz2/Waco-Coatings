@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Waco</string>
+    <string name="navigation_drawer_open">Otwórz menu</string>
+    <string name="navigation_drawer_close">Zamknij menu</string>
+    <string name="o_firmie">WACO Coatings to firma specjalizująca się w sprzedaży wysokiej jakości farb, lakierów i bejc do drewna. Z siedzibą w Tarnowie na ulicy Spokojnej 6, firma oferuje szeroką gamę produktów dedykowanych zarówno dla przemysłu, jak i rzemiosła. Zapraszamy do odwiedzenia naszej strony internetowej link poniżej.</string>
+    <string name="waco">O Firmie WACO Coatings</string>
+
+</resources>

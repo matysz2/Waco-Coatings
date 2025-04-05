@@ -1,0 +1,296 @@
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Główna zawartość -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Tło -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/tlo"
+            android:scaleType="centerCrop" />
+
+        <!-- Warstwa półprzezroczysta -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80FFFFFF" />
+
+        <!-- Główna zawartość z toolbar i grid -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+            <TextView
+                android:id="@+id/welcome_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="WITAMY W APLIKACJI WACO COATCHINGS"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#0D47A1"
+                android:gravity="center"
+                android:layout_marginTop="55dp"
+                android:layout_marginBottom="8dp"
+                android:shadowColor="#55000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="1.5" />
+
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <GridLayout
+                    android:id="@+id/grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- Przyciski siatki -->
+                    <!-- O firmie -->
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:background="@drawable/blue_gradient"
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:onClick="onAboutClick"
+                        android:elevation="2dp"
+                        android:padding="12dp">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:gravity="center"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@android:drawable/ic_menu_info_details" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="O firmie"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Oferta -->
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/blue_gradient"
+
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:onClick="onOfferClick"
+                        android:elevation="2dp"
+                        android:padding="12dp">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@android:drawable/ic_menu_agenda" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Oferta"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Złóż zamówienie -->
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/blue_gradient"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:onClick="onOrderClick"
+                        android:elevation="2dp"
+                        android:padding="12dp">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@android:drawable/ic_menu_add" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Złóż zamówienie"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Kontakt -->
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/blue_gradient"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:onClick="onContactClick"
+                        android:elevation="2dp"
+                        android:padding="12dp">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@android:drawable/ic_menu_call" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Kontakt"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Zaloguj się -->
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/blue_gradient"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:onClick="onLoginClick"
+                        android:elevation="2dp"
+                        android:padding="12dp">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@android:drawable/ic_lock_lock" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Zaloguj się"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Wyjdź -->
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/blue_gradient"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:onClick="onExitClick"
+                        android:elevation="2dp"
+                        android:padding="12dp">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Wyjdź"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                </GridLayout>
+            </ScrollView>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@drawable/nav_background"        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
