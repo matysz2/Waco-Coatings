@@ -12,7 +12,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
-import com.example.wacoapp.AboutWacoActivity
+import com.example.waco.components.OfferActivity
+import com.example.waco.components.AboutWacoActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -64,6 +65,11 @@ class MainActivity : AppCompatActivity() {
     fun onAboutClick(view: View) {
         animateAndStart(view, AboutWacoActivity::class.java)
     }
+    // Obsługa kliknięcia na "Oferta"
+    fun onOfferClick(view: View) {
+        animateAndStart(view, OfferActivity::class.java) // Zmień OfferActivity na odpowiednią aktywność
+    }
+
 
     // Animacja przejścia do nowej aktywności
     fun animateAndStart(view: View, destination: Class<*>) {

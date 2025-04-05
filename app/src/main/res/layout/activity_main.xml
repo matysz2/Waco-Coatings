@@ -110,7 +110,6 @@
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp"
                         android:background="@drawable/blue_gradient"
-
                         android:clickable="true"
                         android:foreground="?attr/selectableItemBackground"
                         android:onClick="onOfferClick"

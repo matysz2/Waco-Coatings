@@ -1,4 +1,4 @@
-package com.example.wacoapp
+package com.example.waco.components
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
