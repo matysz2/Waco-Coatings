@@ -15,6 +15,6 @@ class KonwenteryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflacja layoutu fragmentu
-        return inflater.inflate(R.layout.fragment_podklady, container, false)
+        return inflater.inflate(R.layout.podklady_fragment, container, false)
     }
 }

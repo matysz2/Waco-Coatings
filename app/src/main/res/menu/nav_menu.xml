@@ -37,8 +37,7 @@
     <group android:id="@+id/nav_group_color">
         <item
             android:title="CENNIK KOLORÓW"
-            android:enabled="false"
-            android:icon="@drawable/dollar" />
+            android:enabled="false" />
 
         <item
             android:id="@+id/nav_polysk"

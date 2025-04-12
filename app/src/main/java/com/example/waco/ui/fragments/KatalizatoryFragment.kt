@@ -20,7 +20,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class LakieryFragment : Fragment() {
+class KatalizatoryFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var productAdapter: ProductAdapter
@@ -45,13 +45,13 @@ class LakieryFragment : Fragment() {
         apiService = retrofit.create(ApiService::class.java)
 
         // Pobranie danych
-        fetchLakiery()
+        fetchKatalizatory()
 
         return rootView
     }
 
-    private fun fetchLakiery() {
-        apiService.getLakiery().enqueue(object : Callback<List<Product>> {
+    private fun fetchKatalizatory() {
+        apiService.getKatalizatory().enqueue(object : Callback<List<Product>> {
             override fun onResponse(call: Call<List<Product>>, response: Response<List<Product>>) {
                 if (response.isSuccessful) {
                     val products = response.body()
@@ -71,7 +71,7 @@ class LakieryFragment : Fragment() {
 
             override fun onFailure(call: Call<List<Product>>, t: Throwable) {
                 Toast.makeText(activity, "Błąd połączenia: ${t.message}", Toast.LENGTH_SHORT).show()
-                Log.e("LakieryFragment", "Błąd połączenia: ${t.message}")
+                Log.e("KatalizatoryFragment", "Błąd połączenia: ${t.message}")
             }
         })
     }

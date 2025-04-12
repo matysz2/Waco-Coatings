@@ -7,8 +7,8 @@
 
 
     <string name="p_tab2">Podkłady</string>
-    <string name="l_tab">Lakiery</string>
-    <string name="k_tab">Konwentery</string>
+
+    <string name="k_tab">Lakiery</string>
     <string name="u_tab">Utwardzacze</string>
     <string name="r_tab">Rozpuszczalniki</string>
     <string name="d_tab2">Dodatki</string>

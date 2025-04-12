@@ -1,6 +1,8 @@
 package com.example.waco
 
 
+import LoginActivity
+import OrderActivity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -69,8 +71,14 @@ class MainActivity : AppCompatActivity() {
     fun onOfferClick(view: View) {
         animateAndStart(view, OfferActivity::class.java) // Zmień OfferActivity na odpowiednią aktywność
     }
+ fun onOrderClick(view: View) {
+     animateAndStart(view, OrderActivity::class.java)
+ }
 
+fun onLoginClick(view: View) {
+    animateAndStart(view, LoginActivity::class.java)
 
+}
     // Animacja przejścia do nowej aktywności
     fun animateAndStart(view: View, destination: Class<*>) {
         val anim = AnimationUtils.loadAnimation(this, R.anim.scale_click)

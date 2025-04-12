@@ -1,9 +1,8 @@
 package com.example.waco.components
 
-import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -12,18 +11,18 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.example.waco.MainActivity
 import com.example.waco.R
 import com.example.waco.ui.fragments.DodatkiFragment
+import com.example.waco.ui.fragments.KatalizatoryFragment
 import com.example.waco.ui.fragments.KonwenteryFragment
 import com.example.waco.ui.fragments.LakieryFragment
 import com.example.waco.ui.fragments.PodkladyFragment
 import com.example.waco.ui.fragments.RozpuszczalnikiFragment
-import com.example.waco.ui.fragments.UtwardzaczFragment
 import com.google.android.material.tabs.TabLayout
 
 class OfferActivity : AppCompatActivity() {
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_offer)
@@ -32,20 +31,25 @@ class OfferActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        // Zmiana koloru tekstu na czarny
+        toolbar.setTitleTextColor(resources.getColor(android.R.color.black))
+
         // Ustawienie tytułu i strzałki powrotu
         supportActionBar?.apply {
             title = "OFERTA"
-            setDisplayHomeAsUpEnabled(true)
+            setDisplayHomeAsUpEnabled(true) // Umożliwia pokazanie strzałki
 
-            // Inicjalizacja ViewPager i TabLayout
-            val pagerAdapter = SectionsPagerAdapter(supportFragmentManager)
-            val viewPager: ViewPager = findViewById(R.id.pager)
-            viewPager.adapter = pagerAdapter
 
-            val tabLayout: TabLayout = findViewById(R.id.tabs)
-            tabLayout.setupWithViewPager(viewPager)
+            // Zmieniamy strzałkę na czarną
         }
 
+        // Inicjalizacja ViewPager i TabLayout
+        val pagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+        val viewPager: ViewPager = findViewById(R.id.pager)
+        viewPager.adapter = pagerAdapter
+
+        val tabLayout: TabLayout = findViewById(R.id.tabs)
+        tabLayout.setupWithViewPager(viewPager)
 
         // Sprawdź połączenie z internetem
         if (!isNetworkConnected()) {
@@ -58,7 +62,7 @@ class OfferActivity : AppCompatActivity() {
     private fun isNetworkConnected(): Boolean {
         val connectivityManager =
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
+        val networkInfo = connectivityManager.activeNetworkInfo
         return networkInfo?.isConnected == true
     }
 
@@ -74,6 +78,14 @@ class OfferActivity : AppCompatActivity() {
             .show()
     }
 
+    // Obsługuje naciśnięcie strzałki powrotu
+    override fun onSupportNavigateUp(): Boolean {
+        // Zwrócenie użytkownika do MainActivity po kliknięciu strzałki
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish() // Zakończenie OfferActivity
+        return true
+    }
 
     // Adapter dla ViewPager
     inner class SectionsPagerAdapter(fm: androidx.fragment.app.FragmentManager) :
@@ -81,7 +93,7 @@ class OfferActivity : AppCompatActivity() {
 
         // Określenie liczby tabów
         override fun getCount(): Int {
-            return 6
+            return 5
         }
 
         // Zwracanie odpowiednich fragmentów dla tabów
@@ -89,23 +101,21 @@ class OfferActivity : AppCompatActivity() {
             return when (position) {
                 0 -> PodkladyFragment()
                 1 -> LakieryFragment()
-                2 -> KonwenteryFragment() // Dodaj odpowiedni fragment
-                3 -> UtwardzaczFragment()
-                4 -> RozpuszczalnikiFragment() // Dodaj odpowiedni fragment
-                5 -> DodatkiFragment() // Dodaj odpowiedni fragment
+                2 -> KatalizatoryFragment()
+                3 -> RozpuszczalnikiFragment()
+                4 -> DodatkiFragment()
                 else -> throw IllegalStateException("Invalid tab position")
             }
         }
 
-        // Tytuły tabów (teraz 6 tytułów)
+        // Tytuły tabów
         override fun getPageTitle(position: Int): CharSequence? {
             return when (position) {
                 0 -> getString(R.string.p_tab2)
-                1 -> getString(R.string.l_tab)
-                2 -> getString(R.string.k_tab)
-                3 -> getString(R.string.u_tab)
-                4 -> getString(R.string.r_tab)
-                5 -> getString(R.string.d_tab2)
+                1 -> getString(R.string.k_tab)
+                2 -> getString(R.string.u_tab)
+                3 -> getString(R.string.r_tab)
+                4 -> getString(R.string.d_tab2)
                 else -> null
             }
         }
