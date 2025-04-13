@@ -1,74 +1,145 @@
+package com.example.waco.components
+
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.example.waco.MainActivity
 import com.example.waco.R
-import com.example.waco.data.User
-import com.example.waco.network.ApiClient
-import com.example.waco.network.ApiService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import okhttp3.*
+import org.json.JSONObject
+import java.io.IOException
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var emailEditText: EditText
-    private lateinit var passwordEditText: EditText
-    private lateinit var loginButton: Button
+    private lateinit var editTextEmail: EditText
+    private lateinit var editTextPassword: EditText
+    private lateinit var buttonLogin: Button
+
+    private val loginUrl = "http://waco.atwebpages.com/waco/login.php"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sharedPreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        if (sharedPreferences.getBoolean("is_logged_in", false)) {
+            startActivity(Intent(this, OrderActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(R.layout.login_activity)
 
-        emailEditText = findViewById(R.id.editTextEmail)
-        passwordEditText = findViewById(R.id.editTextPassword)
-        loginButton = findViewById(R.id.buttonLogin)
+        // Ustawienie Toolbar
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        title = "LOGOWANIE"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true) // Pokazuje strzałkę powrotu
 
-        loginButton.setOnClickListener {
-            val email = emailEditText.text.toString()
-            val password = passwordEditText.text.toString()
+         fun onSupportNavigateUp(): Boolean {
+            // Zamiast używać onBackPressed, przekierowujemy do konkretnej aktywności
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)  // Uruchamiamy MainActivity
+            finish()  // Zakończ obecna aktywność, aby nie pozostała w stosie
+            return true
+        }
+
+
+        editTextEmail = findViewById(R.id.editTextEmail)
+        editTextPassword = findViewById(R.id.editTextPassword)
+        buttonLogin = findViewById(R.id.buttonLogin)
+
+        buttonLogin.setOnClickListener {
+            val email = editTextEmail.text.toString()
+            val password = editTextPassword.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 loginUser(email, password)
             } else {
-                Toast.makeText(this, "Proszę wypełnić wszystkie pola", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Wprowadź dane logowania", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun loginUser(email: String, password: String) {
-        val apiService = ApiClient.getClient().create(ApiService::class.java)
+        val client = OkHttpClient()
+        val formBody = FormBody.Builder()
+            .add("email", email)
+            .add("password", password)
+            .build()
 
-        apiService.login(email, password).enqueue(object : Callback<List<User>> {
-            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-                if (response.isSuccessful) {
-                    val users = response.body()
+        val request = Request.Builder()
+            .url(loginUrl)
+            .post(formBody)
+            .build()
 
-                    if (users != null && users.isNotEmpty()) {
-                        val user = users.first()  // zakładamy że login zwraca listę z 1 użytkownikiem
-                        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-                        val editor = sharedPreferences.edit()
-                        editor.putString("userId", user.id)
-                        editor.putString("name", user.name)
-                        editor.putString("email", user.email)
-                        editor.apply()
-
-                        val intent = Intent(this@LoginActivity, OrderActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Toast.makeText(this@LoginActivity, "Niepoprawny email lub hasło", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this@LoginActivity, "Błąd logowania", Toast.LENGTH_SHORT).show()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(this@LoginActivity, "Błąd połączenia", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                Toast.makeText(this@LoginActivity, "Błąd połączenia z serwerem", Toast.LENGTH_SHORT).show()
+            override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string()
+
+                if (response.isSuccessful && responseBody != null) {
+                    try {
+                        println("ODPOWIEDŹ SERWERA: $responseBody")
+                        val json = JSONObject(responseBody)
+
+                        val status = json.optString("status")
+                        if (status == "success") {
+                            val userId = json.optString("user_id")
+
+                            val sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
+                            sharedPref.edit().apply {
+                                putBoolean("is_logged_in", true)
+                                putString("user_id", userId)
+                                apply()
+                            }
+
+                            runOnUiThread {
+                                Toast.makeText(this@LoginActivity, "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show()
+                                startActivity(Intent(this@LoginActivity, OrderActivity::class.java))
+                                finish()
+                            }
+                        } else {
+                            val errorMsg = json.optString("message", "Nieznany błąd logowania")
+                            runOnUiThread {
+                                Toast.makeText(this@LoginActivity, errorMsg, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            Toast.makeText(this@LoginActivity, "Błąd JSON: ${e.message}", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
             }
         })
+    }
+
+    override fun onBackPressed() {
+        // Tworzenie okna dialogowego potwierdzenia
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Czy na pewno chcesz wyjść z aplikacji?")
+            .setCancelable(false)
+            .setPositiveButton("Tak") { dialog, id ->
+                // Wywołanie standardowej akcji wyjścia (kończy aktywność)
+                super.onBackPressed()
+            }
+            .setNegativeButton("Nie") { dialog, id ->
+                dialog.dismiss()  // Anulowanie zamknięcia aplikacji
+            }
+
+        // Wyświetlenie okna dialogowego
+        val alert = builder.create()
+        alert.show()
     }
 }

@@ -1,6 +1,7 @@
 package com.example.waco.data
 
 data class Product(
-    val kod: String,            // Kod produktu
-    val nazwa: String           // Nazwa produktu
+    val id: Int,
+    val name: String,
+    var quantity: Int = 1
 )

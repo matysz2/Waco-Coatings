@@ -4,21 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.waco.MainActivity
 import com.example.waco.R
-import com.example.waco.ui.fragments.DodatkiFragment
-import com.example.waco.ui.fragments.KatalizatoryFragment
-import com.example.waco.ui.fragments.KonwenteryFragment
-import com.example.waco.ui.fragments.LakieryFragment
-import com.example.waco.ui.fragments.PodkladyFragment
-import com.example.waco.ui.fragments.RozpuszczalnikiFragment
+import com.example.waco.ui.fragments.*
 import com.google.android.material.tabs.TabLayout
 
 class OfferActivity : AppCompatActivity() {
@@ -27,20 +22,15 @@ class OfferActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_offer)
 
-        // Inicjalizacja Toolbar
+        // Toolbar setup
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        // Zmiana koloru tekstu na czarny
-        toolbar.setTitleTextColor(resources.getColor(android.R.color.black))
-
-        // Ustawienie tytułu i strzałki powrotu
         supportActionBar?.apply {
-            title = "OFERTA"
-            setDisplayHomeAsUpEnabled(true) // Umożliwia pokazanie strzałki
+            title = "Oferta"
+            setDisplayHomeAsUpEnabled(true)
 
 
-            // Zmieniamy strzałkę na czarną
         }
 
         // Inicjalizacja ViewPager i TabLayout
@@ -51,73 +41,64 @@ class OfferActivity : AppCompatActivity() {
         val tabLayout: TabLayout = findViewById(R.id.tabs)
         tabLayout.setupWithViewPager(viewPager)
 
-        // Sprawdź połączenie z internetem
+        // Sprawdzenie połączenia z internetem
         if (!isNetworkConnected()) {
-            // Jeśli brak połączenia z internetem, wyświetl AlertDialog
             showNoInternetDialog()
         }
     }
 
-    // Funkcja sprawdzająca połączenie z internetem
-    private fun isNetworkConnected(): Boolean {
-        val connectivityManager =
-            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connectivityManager.activeNetworkInfo
-        return networkInfo?.isConnected == true
-    }
-
-    // Wyświetlanie AlertDialog, jeśli brak połączenia
-    private fun showNoInternetDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Brak połączenia z internetem")
-            .setMessage("Proszę sprawdzić swoje połączenie internetowe.")
-            .setPositiveButton("OK") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setCancelable(false) // Zapobiega zamknięciu dialogu przez kliknięcie poza nim
-            .show()
-    }
-
-    // Obsługuje naciśnięcie strzałki powrotu
+    // Obsługa kliknięcia strzałki w toolbarze
     override fun onSupportNavigateUp(): Boolean {
-        // Zwrócenie użytkownika do MainActivity po kliknięciu strzałki
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish() // Zakończenie OfferActivity
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
         return true
     }
 
-    // Adapter dla ViewPager
+    private fun isNetworkConnected(): Boolean {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetworkInfo?.isConnected == true
+    }
+
+    private fun showNoInternetDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Brak połączenia z internetem")
+            .setMessage("Proszę sprawdzić swoje połączenie internetowe.")
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .setCancelable(false)
+            .show()
+    }
+
+    // Obsługa przycisku fizycznego cofania
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+            .setMessage("Czy na pewno chcesz wyjść z aplikacji?")
+            .setCancelable(false)
+            .setPositiveButton("Tak") { _, _ -> super.onBackPressed() }
+            .setNegativeButton("Nie") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
     inner class SectionsPagerAdapter(fm: androidx.fragment.app.FragmentManager) :
         FragmentPagerAdapter(fm) {
 
-        // Określenie liczby tabów
-        override fun getCount(): Int {
-            return 5
+        override fun getCount(): Int = 5
+
+        override fun getItem(position: Int): Fragment = when (position) {
+            0 -> PodkladyFragment()
+            1 -> LakieryFragment()
+            2 -> KatalizatoryFragment()
+            3 -> RozpuszczalnikiFragment()
+            4 -> DodatkiFragment()
+            else -> throw IllegalStateException("Invalid tab position")
         }
 
-        // Zwracanie odpowiednich fragmentów dla tabów
-        override fun getItem(position: Int): Fragment {
-            return when (position) {
-                0 -> PodkladyFragment()
-                1 -> LakieryFragment()
-                2 -> KatalizatoryFragment()
-                3 -> RozpuszczalnikiFragment()
-                4 -> DodatkiFragment()
-                else -> throw IllegalStateException("Invalid tab position")
-            }
-        }
-
-        // Tytuły tabów
-        override fun getPageTitle(position: Int): CharSequence? {
-            return when (position) {
-                0 -> getString(R.string.p_tab2)
-                1 -> getString(R.string.k_tab)
-                2 -> getString(R.string.u_tab)
-                3 -> getString(R.string.r_tab)
-                4 -> getString(R.string.d_tab2)
-                else -> null
-            }
+        override fun getPageTitle(position: Int): CharSequence? = when (position) {
+            0 -> getString(R.string.p_tab2)
+            1 -> getString(R.string.k_tab)
+            2 -> getString(R.string.u_tab)
+            3 -> getString(R.string.r_tab)
+            4 -> getString(R.string.d_tab2)
+            else -> null
         }
     }
 }

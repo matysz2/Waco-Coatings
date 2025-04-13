@@ -1,8 +1,11 @@
 package com.example.waco.components
 
+import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.waco.MainActivity
 import com.example.waco.R
 
 class AboutWacoActivity : AppCompatActivity() {
@@ -22,10 +25,28 @@ class AboutWacoActivity : AppCompatActivity() {
         }
     }
 
-    // Obsługa kliknięcia strzałki powrotu
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        // Zamiast używać onBackPressed, przekierowujemy do konkretnej aktywności
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)  // Uruchamiamy MainActivity
+        finish()  // Zakończ obecna aktywność, aby nie pozostała w stosie
         return true
     }
-}
+    override fun onBackPressed() {
+        // Tworzenie okna dialogowego potwierdzenia
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Czy na pewno chcesz wyjść z aplikacji?")
+            .setCancelable(false)
+            .setPositiveButton("Tak") { dialog, id ->
+                // Wywołanie standardowej akcji wyjścia (kończy aktywność)
+                super.onBackPressed()
+            }
+            .setNegativeButton("Nie") { dialog, id ->
+                dialog.dismiss()  // Anulowanie zamknięcia aplikacji
+            }
 
+        // Wyświetlenie okna dialogowego
+        val alert = builder.create()
+        alert.show()
+    }
+}

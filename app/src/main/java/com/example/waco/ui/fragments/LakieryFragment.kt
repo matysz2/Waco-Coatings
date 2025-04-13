@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
 import com.example.waco.adapter.ProductAdapter
-import com.example.waco.data.Product
+import com.example.waco.data.Product2
 import com.example.waco.network.ApiService
 import com.example.waco.network.Constants
 import retrofit2.Call
@@ -51,8 +51,8 @@ class LakieryFragment : Fragment() {
     }
 
     private fun fetchLakiery() {
-        apiService.getLakiery().enqueue(object : Callback<List<Product>> {
-            override fun onResponse(call: Call<List<Product>>, response: Response<List<Product>>) {
+        apiService.getLakiery().enqueue(object : Callback<List<Product2>> {
+            override fun onResponse(call: Call<List<Product2>>, response: Response<List<Product2>>) {
                 if (response.isSuccessful) {
                     val products = response.body()
                     if (products != null) {
@@ -69,7 +69,7 @@ class LakieryFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<List<Product>>, t: Throwable) {
+            override fun onFailure(call: Call<List<Product2>>, t: Throwable) {
                 Toast.makeText(activity, "Błąd połączenia: ${t.message}", Toast.LENGTH_SHORT).show()
                 Log.e("LakieryFragment", "Błąd połączenia: ${t.message}")
             }

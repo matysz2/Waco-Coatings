@@ -1,21 +1,22 @@
 package com.example.waco
 
-
-import LoginActivity
-import OrderActivity
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
-import com.example.waco.components.OfferActivity
 import com.example.waco.components.AboutWacoActivity
+import com.example.waco.components.OfferActivity
+import com.example.waco.components.LoginActivity
+import com.example.waco.components.OrderActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -56,7 +57,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_polysk -> {}
                 R.id.nav_polmat -> {}
                 R.id.nav_mat -> {}
-                R.id.nav_finish -> finish()
+                R.id.nav_finish -> {
+                    showExitDialog()
+                }
             }
             drawerLayout.closeDrawers()
             true
@@ -67,18 +70,20 @@ class MainActivity : AppCompatActivity() {
     fun onAboutClick(view: View) {
         animateAndStart(view, AboutWacoActivity::class.java)
     }
+
     // Obsługa kliknięcia na "Oferta"
     fun onOfferClick(view: View) {
-        animateAndStart(view, OfferActivity::class.java) // Zmień OfferActivity na odpowiednią aktywność
+        animateAndStart(view, OfferActivity::class.java)
     }
- fun onOrderClick(view: View) {
-     animateAndStart(view, OrderActivity::class.java)
- }
 
-fun onLoginClick(view: View) {
-    animateAndStart(view, LoginActivity::class.java)
+    fun onOrderClick(view: View) {
+        animateAndStart(view, OrderActivity::class.java)
+    }
 
-}
+    fun onLoginClick(view: View) {
+        animateAndStart(view, LoginActivity::class.java)
+    }
+
     // Animacja przejścia do nowej aktywności
     fun animateAndStart(view: View, destination: Class<*>) {
         val anim = AnimationUtils.loadAnimation(this, R.anim.scale_click)
@@ -88,9 +93,58 @@ fun onLoginClick(view: View) {
             override fun onAnimationEnd(animation: Animation?) {
                 val intent = Intent(this@MainActivity, destination)
                 startActivity(intent)
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left) // Animacja przejścia
+                finish()
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
             override fun onAnimationRepeat(animation: Animation?) {}
         })
     }
+
+    // Pokazanie dialogu wyjścia
+    private fun showExitDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Czy na pewno chcesz wyjść z aplikacji?")
+            .setCancelable(false)
+            .setPositiveButton("Tak") { _, _ ->
+                finish() // Kończy aplikację
+            }
+            .setNegativeButton("Nie") { dialog, _ ->
+                dialog.dismiss() // Zamknie dialog
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    // Nadpisanie przycisku "Wstecz" telefonu
+    fun onExitClick(view: View) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Czy na pewno chcesz wyjść z aplikacji?")
+            .setCancelable(false)
+            .setPositiveButton("Tak") { _, _ ->
+                super.onBackPressed() // Exit the activity
+            }
+            .setNegativeButton("Nie") { dialog, _ ->
+                dialog.dismiss() // Dismiss the dialog, do nothing
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+    override fun onBackPressed() {
+        // Tworzenie okna dialogowego potwierdzenia
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Czy na pewno chcesz wyjść z aplikacji?")
+            .setCancelable(false)
+            .setPositiveButton("Tak") { dialog, id ->
+                // Wywołanie standardowej akcji wyjścia (kończy aktywność)
+                super.onBackPressed()
+            }
+            .setNegativeButton("Nie") { dialog, id ->
+                dialog.dismiss()  // Anulowanie zamknięcia aplikacji
+            }
+
+        // Wyświetlenie okna dialogowego
+        val alert = builder.create()
+        alert.show()
+    }
+
 }

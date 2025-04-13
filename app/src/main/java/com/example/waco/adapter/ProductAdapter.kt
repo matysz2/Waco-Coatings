@@ -7,8 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
 import com.example.waco.data.Product
+import com.example.waco.data.Product2
 
-class ProductAdapter(private var productList: List<Product>) :
+class ProductAdapter(private var productList: List<Product2>) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -27,7 +28,7 @@ class ProductAdapter(private var productList: List<Product>) :
         return productList.size
     }
 
-    fun updateData(newList: List<Product>) {
+    fun updateData(newList: List<Product2>) {
         productList = newList
         notifyDataSetChanged()
     }
@@ -36,4 +37,6 @@ class ProductAdapter(private var productList: List<Product>) :
         val codeTextView: TextView = view.findViewById(R.id.productCode)
         val descriptionTextView: TextView = view.findViewById(R.id.productDescription)
     }
+
+
 }

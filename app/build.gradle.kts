@@ -61,13 +61,15 @@ dependencies {
 
     // Dodajemy AppCompat do klasycznych widoków XML
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation ("androidx.navigation:navigation-ui-ktx:2.5.2")
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.2")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation(libs.identity.credential)
     implementation(libs.glide)
-
+    implementation("org.json:json:20210307")
+    // Dodanie zależności do EncryptedSharedPreferences
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

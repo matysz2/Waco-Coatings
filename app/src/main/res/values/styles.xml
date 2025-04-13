@@ -18,7 +18,11 @@
         <item name="android:gravity">center</item>
     </style>
 
- 
+    <style name="CustomToolbarStyle" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorPrimary">@color/gray</item>
+        <item name="android:colorControlNormal">@color/gray</item> <!-- <- kolor ikony wstecz -->
+    </style>
+
 
 
 

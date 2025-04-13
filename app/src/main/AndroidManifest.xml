@@ -40,8 +40,8 @@
         </activity>
 
 
-        <activity android:name="com.example.waco.components.OfferActivity">
-            <!-- MainActivity nie powinna być uruchamiana jako launcher -->
+        <activity android:name="com.example.waco.components.OfferActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity android:name="com.example.waco.components.LoginActivity"
