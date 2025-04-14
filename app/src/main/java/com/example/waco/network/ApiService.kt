@@ -31,7 +31,7 @@ interface ApiService {
 
 
 
-    @GET("get_products.php")
+    @GET("productslist.php")
     fun getProducts(): Call<List<Product>>
 
     @POST("submit_order.php")

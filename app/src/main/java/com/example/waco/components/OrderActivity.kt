@@ -2,6 +2,8 @@ package com.example.waco.components
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -54,6 +56,51 @@ class OrderActivity : AppCompatActivity() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = adapter.getPageTitle(position)
         }.attach()
+    }
+
+    // Ładowanie menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_logout, menu)  // Załaduj plik menu_logout.xml
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    // Obsługa kliknięcia w przycisk wylogowania
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.logout -> {
+                showLogoutConfirmationDialog()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Czy na pewno chcesz wylogować się?")
+            .setCancelable(false)
+            .setPositiveButton("Tak") { dialog, id ->
+                // Wyczyść dane użytkownika z pamięci
+                clearUserData()
+                // Przejdź do MainActivity
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()  // Zakończ obecną aktywność
+            }
+            .setNegativeButton("Nie") { dialog, id ->
+                dialog.dismiss()  // Anulowanie
+            }
+
+        val alert = builder.create()
+        alert.show()
+    }
+
+    private fun clearUserData() {
+        val sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            clear()
+            apply()
+        }
     }
 
     // Obsługa kliknięcia strzałki w toolbarze (powrót do MainActivity)

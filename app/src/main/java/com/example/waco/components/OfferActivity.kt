@@ -29,9 +29,11 @@ class OfferActivity : AppCompatActivity() {
         supportActionBar?.apply {
             title = "Oferta"
             setDisplayHomeAsUpEnabled(true)
-
-
         }
+
+        // Zmiana koloru tytułu i strzałki na szary
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.gray)) // upewnij się, że masz color "gray" w colors.xml
+        toolbar.navigationIcon?.setTint(ContextCompat.getColor(this, R.color.gray))
 
         // Inicjalizacja ViewPager i TabLayout
         val pagerAdapter = SectionsPagerAdapter(supportFragmentManager)
@@ -46,6 +48,7 @@ class OfferActivity : AppCompatActivity() {
             showNoInternetDialog()
         }
     }
+
 
     // Obsługa kliknięcia strzałki w toolbarze
     override fun onSupportNavigateUp(): Boolean {
