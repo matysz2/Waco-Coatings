@@ -46,4 +46,11 @@ class OrderItemAdapter(private var items: MutableList<Product>) :
         items.addAll(newItems)
         notifyDataSetChanged()
     }
+
+    // Metoda do zaktualizowania zamówienia (aktualizacja listy produktów)
+    fun updateOrder(newOrderList: MutableList<Product>) {
+        items.clear()
+        items.addAll(newOrderList)
+        notifyDataSetChanged() // Powiadom adapter o zmianie danych
+    }
 }

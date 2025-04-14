@@ -87,7 +87,7 @@ class AddProductFragment : Fragment() {
     private fun showQuantityDialog(product: Product) {
         val input = EditText(requireContext()).apply {
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-            hint = "Podaj ilość w kg"
+            hint = "Podaj ilość"
         }
 
         AlertDialog.Builder(requireContext())

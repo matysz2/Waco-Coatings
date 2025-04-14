@@ -9,13 +9,15 @@
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/gradient_background"
         android:queryHint="Szukaj produktu..." />
 
     <Button
         android:id="@+id/btnAddProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dodaj"
+        android:text="@string/add"
+        android:background="@color/colorPrimary"
         android:layout_marginTop="12dp"
         android:layout_gravity="end" />
 

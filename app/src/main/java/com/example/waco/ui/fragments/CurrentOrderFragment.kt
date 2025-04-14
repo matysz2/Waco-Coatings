@@ -41,7 +41,7 @@ class CurrentOrderFragment : Fragment() {
                     if (response.isSuccessful) {
                         Toast.makeText(requireContext(), "Zamówienie złożone!", Toast.LENGTH_SHORT).show()
                         OrderManager.clear() // Wyczyść zamówienie po złożeniu.
-                        orderAdapter.notifyDataSetChanged() // Powiadom adapter o zmianie.
+                        orderAdapter.updateOrder(OrderManager.getCurrentOrder().toMutableList()) // Odśwież dane w adapterze.
                     } else {
                         Toast.makeText(requireContext(), "Błąd podczas składania zamówienia", Toast.LENGTH_SHORT).show()
                     }
@@ -54,5 +54,11 @@ class CurrentOrderFragment : Fragment() {
         }
 
         return view
+    }
+
+    // Dodajemy metodę onResume, żeby odświeżyć dane, gdy fragment wróci na ekran.
+    override fun onResume() {
+        super.onResume()
+        orderAdapter.updateOrder(OrderManager.getCurrentOrder().toMutableList()) // Aktualizuj dane po powrocie do fragmentu
     }
 }

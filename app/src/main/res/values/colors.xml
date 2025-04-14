@@ -6,7 +6,7 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-
+    <color name="colorPrimary">#6200EE</color> <!-- Możesz zmienić kolor główny -->
     <color name="gray">#808080</color>
-
+    <color name="colorBackground">#F5F5F5</color> <!-- Kolor tła, np. jasny szary -->
 </resources>
