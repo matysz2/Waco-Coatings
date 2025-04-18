@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Numer zamówienia -->
+    <TextView
+        android:id="@+id/orderNumberText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Numer zamówienia: 1234"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- Data zamówienia -->
+    <TextView
+        android:id="@+id/orderDateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data: 2025-04-12"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Status zamówienia -->
+    <TextView
+        android:id="@+id/orderStatusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status: Przetwarzane"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        android:textStyle="italic" />
+
+    <!-- Separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#d3d3d3"/>
+
+    <!-- Tytuł dla listy produktów -->
+    <TextView
+        android:id="@+id/productsTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Produkty:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <!-- Lista produktów -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/productsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

@@ -1,4 +1,3 @@
-// OrderHistoryAdapter.kt
 package com.example.waco.adapter
 
 import android.view.LayoutInflater
@@ -9,26 +8,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
 import com.example.waco.data.Order
 
-class OrderHistoryAdapter(private val orders: List<Order>) :
+class OrderHistoryAdapter(private val orders: List<Order>, private val onItemClick: (Order) -> Unit) :
     RecyclerView.Adapter<OrderHistoryAdapter.OrderViewHolder>() {
 
     class OrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val orderIdText: TextView = itemView.findViewById(R.id.productNameText)  // zamień na coś sensownego
-        val statusText: TextView = itemView.findViewById(R.id.quantityText)
+        val orderIdText: TextView = itemView.findViewById(R.id.orderNumberText)
+        val statusText: TextView = itemView.findViewById(R.id.statusText)
         val dateText: TextView = itemView.findViewById(R.id.dateText)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_order_history, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_order_history, parent, false)
         return OrderViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orders[position]
-        holder.orderIdText.text = "Zamówienie #${order.orderId}"
+        holder.orderIdText.text = "Numer zamówienia: ${order.orderId}"
         holder.statusText.text = "Status: ${order.status}"
-        holder.dateText.text = "Data: ${order.orderDate}"
+        holder.dateText.text = "Data zamówienia: ${order.orderDate}"
+
+        holder.itemView.setOnClickListener {
+            onItemClick(order)
+        }
     }
 
     override fun getItemCount(): Int = orders.size

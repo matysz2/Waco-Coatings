@@ -1,5 +1,6 @@
 package com.example.waco.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -56,12 +57,23 @@ class CurrentOrderFragment : Fragment() {
         }
     }
 
+    private fun getUserData(): Pair<String, String> {
+        val sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getString("user_id", "") ?: ""
+        val email = sharedPreferences.getString("email", "") ?: ""
+        return Pair(userId, email)
+    }
+
     private fun submitOrder() {
         val comment = commentEditText.text.toString().trim()
 
+        // Pobieramy dane użytkownika z SharedPreferences
+        val (userId, email) = getUserData()
+
+        // Tworzymy obiekt OrderRequest, który będzie zawierał dane użytkownika
         val orderRequest = OrderRequest(
-            userId = "", // Usuwamy dane użytkownika
-            email = "",  // Usuwamy dane użytkownika
+            userId = userId,
+            email = email,
             comment = comment,
             products = OrderManager.getCurrentOrder().map {
                 ProductItem(product_name = it.name, quantity = it.quantity)

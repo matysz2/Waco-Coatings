@@ -21,7 +21,7 @@ import com.example.waco.MainActivity
 import com.example.waco.adapter.OrderHistoryAdapter
 import com.example.waco.ui.fragments.AddProductFragment
 import com.example.waco.ui.fragments.CurrentOrderFragment
-import com.example.waco.ui.fragments.OrderHistoryFragment
+import com.example.waco.ui.fragments.HistoryFragment
 
 class OrderActivity : AppCompatActivity() {
 
@@ -137,7 +137,7 @@ class OrderActivity : AppCompatActivity() {
             return when (position) {
                 0 -> AddProductFragment()
                 1 -> CurrentOrderFragment()
-                2 -> OrderHistoryFragment()
+                2 -> HistoryFragment()
                 else -> throw IllegalStateException("Invalid tab position")
             }
         }
