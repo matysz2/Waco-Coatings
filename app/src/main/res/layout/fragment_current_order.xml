@@ -20,6 +20,16 @@
         android:layout_weight="1"
         android:scrollbars="vertical" />
 
+    <EditText
+        android:id="@+id/editTextComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Dodaj komentarz do zamówienia"
+        android:inputType="textMultiLine"
+        android:minLines="2"
+        android:gravity="top|start"
+        android:background="@drawable/edittext_background" />
+
     <Button
         android:id="@+id/submitOrderButton"
         android:layout_width="match_parent"
@@ -28,4 +38,14 @@
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/design_default_color_primary"
         android:textColor="@android:color/white" />
+    <TextView
+        android:id="@+id/orderSummaryTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Podsumowanie zamówienia"
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:visibility="gone" /> <!-- Domyślnie niewidoczny, pokażemy go przed wysyłką -->
+
+
 </LinearLayout>

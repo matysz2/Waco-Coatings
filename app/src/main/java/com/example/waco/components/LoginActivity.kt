@@ -41,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
         title = "LOGOWANIE"
         supportActionBar?.setDisplayHomeAsUpEnabled(true) // Pokazuje strzałkę powrotu
 
-         fun onSupportNavigateUp(): Boolean {
+        fun onSupportNavigateUp(): Boolean {
             // Zamiast używać onBackPressed, przekierowujemy do konkretnej aktywności
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)  // Uruchamiamy MainActivity
@@ -96,11 +96,14 @@ class LoginActivity : AppCompatActivity() {
                         val status = json.optString("status")
                         if (status == "success") {
                             val userId = json.optString("user_id")
+                            val userEmail = json.optString("email")  // Dodanie emaila do odpowiedzi
 
+                            // Zapisz dane do SharedPreferences
                             val sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
                             sharedPref.edit().apply {
                                 putBoolean("is_logged_in", true)
                                 putString("user_id", userId)
+                                putString("email", userEmail)  // Zapisujemy email
                                 apply()
                             }
 

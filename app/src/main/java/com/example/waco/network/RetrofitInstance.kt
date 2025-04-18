@@ -10,4 +10,6 @@ object RetrofitInstance {
         .build()
 
     val api: ApiService = retrofit.create(ApiService::class.java)
+
+
 }

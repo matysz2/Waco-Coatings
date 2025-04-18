@@ -53,6 +53,8 @@ class AddProductFragment : Fragment() {
             }
         })
         btnAddProduct.setOnClickListener {
+            animateButton(btnAddProduct) // uruchom animację
+
             val query = searchView.query.toString().trim()
             if (query.isNotEmpty()) {
                 val matched = allProducts.find { it.name.equals(query, ignoreCase = true) }
@@ -62,6 +64,7 @@ class AddProductFragment : Fragment() {
                 Toast.makeText(requireContext(), "Wpisz nazwę produktu", Toast.LENGTH_SHORT).show()
             }
         }
+
 
 
         return view
@@ -90,6 +93,8 @@ class AddProductFragment : Fragment() {
             hint = "Podaj ilość"
         }
 
+
+
         AlertDialog.Builder(requireContext())
             .setTitle("Dodaj produkt")
             .setMessage("Produkt: ${product.name}")
@@ -107,4 +112,19 @@ class AddProductFragment : Fragment() {
             .setNegativeButton("Anuluj", null)
             .show()
     }
+    private fun animateButton(view: View) {
+        view.animate()
+            .scaleX(0.95f)
+            .scaleY(0.95f)
+            .setDuration(100)
+            .withEndAction {
+                view.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(100)
+                    .start()
+            }
+            .start()
+    }
+
 }

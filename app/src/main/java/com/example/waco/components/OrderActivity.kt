@@ -1,6 +1,9 @@
 package com.example.waco.components
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -24,25 +27,31 @@ class OrderActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Sprawdzenie połączenia z internetem
+        if (!isNetworkAvailable()) {
+            showNoInternetDialog()
+            return
+        }
+
         setContentView(R.layout.activity_order)
 
         // Inicjalizacja Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        supportActionBar?.title = "Zamówienia"  // Tytuł na pasku narzędzi
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // Przycisk powrotu
+        supportActionBar?.title = "Zamówienia"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Sprawdzanie logowania użytkownika
         val sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE)
         val userId = sharedPreferences.getString("user_id", null)
 
         if (userId == null) {
-            // Jeśli użytkownik nie jest zalogowany, przekieruj do ekranu logowania
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-            finish() // Zakończenie bieżącej aktywności
+            finish()
             return
         }
 
@@ -52,19 +61,16 @@ class OrderActivity : AppCompatActivity() {
         val adapter = OrderPagerAdapter(this)
         viewPager.adapter = adapter
 
-        // Połączenie TabLayout z ViewPager2
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = adapter.getPageTitle(position)
         }.attach()
     }
 
-    // Ładowanie menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_logout, menu)  // Załaduj plik menu_logout.xml
+        menuInflater.inflate(R.menu.menu_logout, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
-    // Obsługa kliknięcia w przycisk wylogowania
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
@@ -80,15 +86,13 @@ class OrderActivity : AppCompatActivity() {
         builder.setMessage("Czy na pewno chcesz wylogować się?")
             .setCancelable(false)
             .setPositiveButton("Tak") { dialog, id ->
-                // Wyczyść dane użytkownika z pamięci
                 clearUserData()
-                // Przejdź do MainActivity
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
-                finish()  // Zakończ obecną aktywność
+                finish()
             }
             .setNegativeButton("Nie") { dialog, id ->
-                dialog.dismiss()  // Anulowanie
+                dialog.dismiss()
             }
 
         val alert = builder.create()
@@ -103,26 +107,37 @@ class OrderActivity : AppCompatActivity() {
         }
     }
 
-    // Obsługa kliknięcia strzałki w toolbarze (powrót do MainActivity)
     override fun onSupportNavigateUp(): Boolean {
         val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)  // Uruchamiamy MainActivity
-        finish()  // Zakończ obecna aktywność, aby nie pozostała w stosie
+        startActivity(intent)
+        finish()
         return true
     }
 
-    // Adapter dla ViewPager2
-    inner class OrderPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Czy na pewno chcesz wyjść z aplikacji?")
+            .setCancelable(false)
+            .setPositiveButton("Tak") { dialog, id ->
+                super.onBackPressed()
+            }
+            .setNegativeButton("Nie") { dialog, id ->
+                dialog.dismiss()
+            }
 
-        override fun getItemCount(): Int {
-            return 3 // Liczba tabów
-        }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    // Adapter do ViewPager2
+    inner class OrderPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+        override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                0 -> AddProductFragment() // Podstawowy fragment dla pierwszego tab-a
-                1 -> CurrentOrderFragment() // Drugi fragment
-                2 -> OrderHistoryFragment() // Trzeci fragment
+                0 -> AddProductFragment()
+                1 -> CurrentOrderFragment()
+                2 -> OrderHistoryFragment()
                 else -> throw IllegalStateException("Invalid tab position")
             }
         }
@@ -137,21 +152,23 @@ class OrderActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        // Tworzenie okna dialogowego potwierdzenia
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage("Czy na pewno chcesz wyjść z aplikacji?")
-            .setCancelable(false)
-            .setPositiveButton("Tak") { dialog, id ->
-                // Wywołanie standardowej akcji wyjścia (kończy aktywność)
-                super.onBackPressed()
-            }
-            .setNegativeButton("Nie") { dialog, id ->
-                dialog.dismiss()  // Anulowanie zamknięcia aplikacji
-            }
+    // Sprawdzenie dostępności internetu
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
 
-        // Wyświetlenie okna dialogowego
-        val alert = builder.create()
-        alert.show()
+    // Wyświetlenie komunikatu o braku internetu
+    private fun showNoInternetDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Brak połączenia")
+            .setMessage("Brak połączenia z internetem. Sprawdź połączenie i spróbuj ponownie.")
+            .setCancelable(false)
+            .setPositiveButton("Zamknij") { _, _ ->
+                finish()
+            }
+        builder.create().show()
     }
 }

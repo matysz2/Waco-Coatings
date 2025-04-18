@@ -7,28 +7,40 @@
     android:layout_marginBottom="8dp"
     android:elevation="2dp">
 
+    <!-- Numer zamówienia -->
+    <TextView
+        android:id="@+id/orderNumberText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Numer zamówienia: 12345"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- Data zamówienia -->
     <TextView
         android:id="@+id/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Data: 2025-04-12"
         android:textSize="14sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/productsText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Produkty: Lakier X, Lakier Y"
-        android:textSize="14sp"
         android:layout_marginTop="4dp" />
 
+    <!-- Status zamówienia -->
     <TextView
-        android:id="@+id/totalText"
+        android:id="@+id/statusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Razem: 340 zł"
+        android:text="Status: Zrealizowane"
         android:textSize="14sp"
-        android:layout_marginTop="4dp"
-        android:textStyle="italic" />
+        android:textStyle="italic"
+        android:layout_marginTop="4dp" />
+
+    <!-- Przycisk szczegóły -->
+    <Button
+        android:id="@+id/detailsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Szczegóły"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="end" />
 </LinearLayout>
