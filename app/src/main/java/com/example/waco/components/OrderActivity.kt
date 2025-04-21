@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
@@ -45,8 +46,19 @@ class OrderActivity : AppCompatActivity() {
 
         // Sprawdzanie logowania użytkownika
         val sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE)
-        val userId = sharedPreferences.getString("user_id", null)
 
+        // Logowanie zawartości SharedPreferences
+        val userId = sharedPreferences.getString("user_id", null)
+        val email = sharedPreferences.getString("email", null)
+        val firebaseToken = sharedPreferences.getString("firebase_token", null)
+
+        // Logi zawartości SharedPreferences
+        Log.d("OrderActivity", "Dane w SharedPreferences:")
+        Log.d("OrderActivity", "user_id: $userId")
+        Log.d("OrderActivity", "email: $email")
+        Log.d("OrderActivity", "firebase_token: $firebaseToken")
+
+        // Jeśli użytkownik nie jest zalogowany, przekieruj do ekranu logowania
         if (userId == null) {
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

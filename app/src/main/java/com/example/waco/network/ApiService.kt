@@ -1,11 +1,15 @@
 package com.example.waco.network
 import com.example.waco.data.Order
+import com.example.waco.data.OrderDetails
 import com.example.waco.data.OrderRequest
+import com.example.waco.data.OrderStatusResponse
 import com.example.waco.data.Product
 import com.example.waco.data.Product2
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -28,7 +32,6 @@ interface ApiService {
     fun getRozpuszczalniki(): Call<List<Product2>>
 
 
-
     @GET("productslist.php")
     fun getProducts(): Call<List<Product>>
 
@@ -41,7 +44,26 @@ interface ApiService {
 
     @GET("listorders.php")
     fun getOrders(@Query("user_id") userId: Int): Call<List<Order>>
+
+
+    @FormUrlEncoded
+    @POST("save_fcm_token.php")
+    fun updateFcmToken(
+        @Field("user_id") userId: Int,
+        @Field("fcm_token") fcmToken: String
+    ): Call<Void>
+
+    @GET("get_order_status.php")
+    fun getOrderStatus(
+        @Query("order_id") orderId: Int
+    ): Call<OrderStatusResponse>
+
+
+    @GET("get_order_details.php")
+    fun getOrderDetails(@Query("order_id") orderId: Int): Call<OrderDetails>
+
 }
+
 
 
 

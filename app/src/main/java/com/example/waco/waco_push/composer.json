@@ -1,0 +1,12 @@
+{
+  "name": "waco/push-notifications",
+  "description": "System powiadomień FCM dla zamówień w aplikacji Waco",
+  "require": {
+    "kreait/firebase-php": "^7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Waco\\": "src/"
+    }
+  }
+}

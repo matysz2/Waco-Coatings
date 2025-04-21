@@ -3,22 +3,27 @@ package com.example.waco.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
 import com.example.waco.data.Order
 
-class OrderHistoryAdapter(private val orders: List<Order>, private val onItemClick: (Order) -> Unit) :
-    RecyclerView.Adapter<OrderHistoryAdapter.OrderViewHolder>() {
+class OrderHistoryAdapter(
+    private val orders: List<Order>,
+    private val onDetailsClick: (Order) -> Unit
+) : RecyclerView.Adapter<OrderHistoryAdapter.OrderViewHolder>() {
 
     class OrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val orderIdText: TextView = itemView.findViewById(R.id.orderNumberText)
         val statusText: TextView = itemView.findViewById(R.id.statusText)
         val dateText: TextView = itemView.findViewById(R.id.dateText)
+        val detailsButton: Button = itemView.findViewById(R.id.detailsButton) // <- Nowy przycisk
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_order_history, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_order_history, parent, false)
         return OrderViewHolder(view)
     }
 
@@ -28,8 +33,9 @@ class OrderHistoryAdapter(private val orders: List<Order>, private val onItemCli
         holder.statusText.text = "Status: ${order.status}"
         holder.dateText.text = "Data zamówienia: ${order.orderDate}"
 
-        holder.itemView.setOnClickListener {
-            onItemClick(order)
+        // Tylko przycisk reaguje
+        holder.detailsButton.setOnClickListener {
+            onDetailsClick(order)
         }
     }
 

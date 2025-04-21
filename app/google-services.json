@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "964971473539",
+    "project_id": "waco-d4e36",
+    "storage_bucket": "waco-d4e36.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964971473539:android:a4c12872211f409d0f49b6",
+        "android_client_info": {
+          "package_name": "com.example.waco"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJjXvfpD_-kgU2QcEJE8IycObyA08eF5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

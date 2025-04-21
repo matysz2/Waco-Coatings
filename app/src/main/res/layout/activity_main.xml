@@ -40,7 +40,7 @@
                 android:id="@+id/welcome_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="WITAMY W APLIKACJI WACO COATCHINGS"
+                android:text="WITAMY W APLIKACJI WACO COATINGS"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="#0D47A1"

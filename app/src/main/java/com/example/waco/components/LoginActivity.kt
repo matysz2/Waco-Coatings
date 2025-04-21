@@ -3,6 +3,7 @@ package com.example.waco.components
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -12,6 +13,8 @@ import androidx.appcompat.widget.Toolbar
 import com.example.waco.MainActivity
 import com.example.waco.R
 import com.example.waco.ui.fragments.CurrentOrderFragment
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -26,29 +29,16 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val sharedPreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE)
-        if (sharedPreferences.getBoolean("is_logged_in", false)) {
-            startActivity(Intent(this, OrderActivity::class.java))
-            finish()
-            return
-        }
-
         setContentView(R.layout.login_activity)
 
-        // Ustawienie Toolbar
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        title = "LOGOWANIE"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // Pokazuje strzałkę powrotu
+        // Inicjalizacja Firebase
+        FirebaseApp.initializeApp(this)
+        Log.d("FirebaseInit", "Firebase initialized: ${FirebaseApp.getInstance() != null}")
 
-        fun onSupportNavigateUp(): Boolean {
-            // Zamiast używać onBackPressed, przekierowujemy do konkretnej aktywności
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)  // Uruchamiamy MainActivity
-            finish()  // Zakończ obecna aktywność, aby nie pozostała w stosie
-            return true
-        }
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "LOGOWANIE"
 
         editTextEmail = findViewById(R.id.editTextEmail)
         editTextPassword = findViewById(R.id.editTextPassword)
@@ -57,13 +47,15 @@ class LoginActivity : AppCompatActivity() {
         buttonLogin.setOnClickListener {
             val email = editTextEmail.text.toString()
             val password = editTextPassword.text.toString()
-
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                loginUser(email, password)
-            } else {
-                Toast.makeText(this, "Wprowadź dane logowania", Toast.LENGTH_SHORT).show()
-            }
+            loginUser(email, password)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        Log.d("LoginActivity", "Kliknięto strzałkę powrotu")
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+        return true
     }
 
     private fun loginUser(email: String, password: String) {
@@ -96,21 +88,36 @@ class LoginActivity : AppCompatActivity() {
                         val status = json.optString("status")
                         if (status == "success") {
                             val userId = json.optString("user_id")
-                            val userEmail = json.optString("email")  // Dodanie emaila do odpowiedzi
+                            val userEmail = json.optString("email")
 
-                            // Zapisz dane do SharedPreferences
-                            val sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
-                            sharedPref.edit().apply {
-                                putBoolean("is_logged_in", true)
-                                putString("user_id", userId)
-                                putString("email", userEmail)  // Zapisujemy email
-                                apply()
-                            }
+                            // Pobranie tokena z Firebase i zapisanie go
+                            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val token = task.result
+                                    Log.d("FirebaseToken", "Nowy token: $token")
 
-                            runOnUiThread {
-                                Toast.makeText(this@LoginActivity, "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(this@LoginActivity, OrderActivity::class.java))
-                                finish()
+                                    val sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
+                                    sharedPref.edit().apply {
+                                        putBoolean("is_logged_in", true)
+                                        putString("user_id", userId)
+                                        putString("email", userEmail)
+                                        putString("firebase_token", token)
+                                        apply()
+                                    }
+
+                                    // Wysyłka tokena na serwer
+                                    updateFirebaseToken(userId, token)
+
+                                    runOnUiThread {
+                                        Toast.makeText(this@LoginActivity, "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show()
+                                        startActivity(Intent(this@LoginActivity, OrderActivity::class.java))
+                                        finish()
+                                    }
+                                } else {
+                                    runOnUiThread {
+                                        Toast.makeText(this@LoginActivity, "Nie udało się pobrać tokena", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
                             }
                         } else {
                             val errorMsg = json.optString("message", "Nieznany błąd logowania")
@@ -128,20 +135,42 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    private fun updateFirebaseToken(userId: String, token: String) {
+        val client = OkHttpClient()
+        val formBody = FormBody.Builder()
+            .add("user_id", userId)
+            .add("fcm_token", token)
+            .build()
+
+        val request = Request.Builder()
+            .url("http://waco.atwebpages.com/waco/save_fcm_token.php")
+            .post(formBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(this@LoginActivity, "Błąd połączenia z aktualizacją tokenu", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    runOnUiThread {
+                        Toast.makeText(this@LoginActivity, "Błąd przy aktualizacji tokenu", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })
+    }
+
     override fun onBackPressed() {
-        // Tworzenie okna dialogowego potwierdzenia
         val builder = AlertDialog.Builder(this)
         builder.setMessage("Czy na pewno chcesz wyjść z aplikacji?")
             .setCancelable(false)
-            .setPositiveButton("Tak") { dialog, id ->
-                // Wywołanie standardowej akcji wyjścia (kończy aktywność)
-                super.onBackPressed()
-            }
-            .setNegativeButton("Nie") { dialog, id ->
-                dialog.dismiss()  // Anulowanie zamknięcia aplikacji
-            }
+            .setPositiveButton("Tak") { _, _ -> super.onBackPressed() }
+            .setNegativeButton("Nie") { dialog, _ -> dialog.dismiss() }
 
-        // Wyświetlenie okna dialogowego
         val alert = builder.create()
         alert.show()
     }

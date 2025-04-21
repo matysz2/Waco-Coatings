@@ -14,9 +14,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import com.example.waco.components.AboutWacoActivity
+import com.example.waco.components.ContactActivity
 import com.example.waco.components.OfferActivity
 import com.example.waco.components.LoginActivity
 import com.example.waco.components.OrderActivity
+import com.google.firebase.FirebaseApp
 
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -82,6 +84,9 @@ class MainActivity : AppCompatActivity() {
 
     fun onLoginClick(view: View) {
         animateAndStart(view, LoginActivity::class.java)
+    }
+    fun onContactClick(view: View) {
+        animateAndStart(view, ContactActivity::class.java)
     }
 
     // Animacja przejścia do nowej aktywności
