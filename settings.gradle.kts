@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Waco"
 include(":app")
- 
+include(":opencv")
+include(":app", ":opencv")

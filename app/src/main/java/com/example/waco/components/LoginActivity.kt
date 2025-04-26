@@ -29,6 +29,21 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Sprawdzenie czy użytkownik jest już zalogowany
+        val sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        val userId = sharedPref.getString("user_id", null)
+        val userEmail = sharedPref.getString("email", null)
+        val firebaseToken = sharedPref.getString("firebase_token", null)
+
+        Log.d("LoginActivity", "Sprawdzanie zapisanych danych: userId=$userId, email=$userEmail, token=$firebaseToken")
+
+        if (!userId.isNullOrEmpty() && !userEmail.isNullOrEmpty() && !firebaseToken.isNullOrEmpty()) {
+            startActivity(Intent(this, OrderActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(R.layout.login_activity)
 
         // Inicjalizacja Firebase
@@ -59,6 +74,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUser(email: String, password: String) {
+        if (email.isBlank() || password.isBlank()) {
+            Toast.makeText(this, "Proszę wprowadzić email i hasło", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val client = OkHttpClient()
         val formBody = FormBody.Builder()
             .add("email", email)
@@ -73,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
-                    Toast.makeText(this@LoginActivity, "Błąd połączenia", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, "Błąd połączenia: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -82,15 +102,13 @@ class LoginActivity : AppCompatActivity() {
 
                 if (response.isSuccessful && responseBody != null) {
                     try {
-                        println("ODPOWIEDŹ SERWERA: $responseBody")
                         val json = JSONObject(responseBody)
-
                         val status = json.optString("status")
+
                         if (status == "success") {
                             val userId = json.optString("user_id")
                             val userEmail = json.optString("email")
 
-                            // Pobranie tokena z Firebase i zapisanie go
                             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     val token = task.result
@@ -105,7 +123,6 @@ class LoginActivity : AppCompatActivity() {
                                         apply()
                                     }
 
-                                    // Wysyłka tokena na serwer
                                     updateFirebaseToken(userId, token)
 
                                     runOnUiThread {
@@ -127,8 +144,12 @@ class LoginActivity : AppCompatActivity() {
                         }
                     } catch (e: Exception) {
                         runOnUiThread {
-                            Toast.makeText(this@LoginActivity, "Błąd JSON: ${e.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@LoginActivity, "Błąd JSON: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
                         }
+                    }
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(this@LoginActivity, "Błąd odpowiedzi serwera", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

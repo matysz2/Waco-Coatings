@@ -2,6 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Uprawnienia -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Funkcje sprzętowe -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -14,6 +24,8 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <!-- Google Maps API Key (pusta, dodaj kiedyś swoją) -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="" />
@@ -31,15 +43,15 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity - uruchamiana po SplashActivity -->
+        <!-- MainActivity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"> <!-- MainActivity nie powinna być uruchamiana jako launcher -->
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <!-- Pozostałe Activity -->
         <activity android:name="com.example.waco.components.AboutWacoActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> <!-- MainActivity nie powinna być uruchamiana jako launcher -->
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity android:name="com.example.waco.components.OfferActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -49,11 +61,44 @@
 
         <activity android:name="com.example.waco.components.ContactActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity android:name="com.example.waco.components.OrderActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity android:name="com.example.waco.components.OrderDetailsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+
+        <activity android:name="com.example.waco.components.ColorListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+
+        <activity android:name="com.example.waco.components.ColorRGBDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+
+
+        <activity android:name="com.example.waco.components.ColorDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+
+        <activity android:name="com.example.waco.components.ColorRGBListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name="com.example.waco.components.ColorRalCamera"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+
+
+
+
+
+        <!-- Jeśli dodasz np. CameraObjectActivity -->
+        <!--
+        <activity android:name="com.example.waco.components.CameraObjectActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true" />
+        -->
 
         <!-- Firebase Messaging Service -->
         <service
@@ -64,22 +109,15 @@
             </intent-filter>
         </service>
 
-        <!-- Inicjalizacja Firebase Analytics -->
+        <!-- Firebase Default Notification Settings -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
 
-        <!-- Domyślny ID powiadomienia Firebase -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/notification_color" />
 
     </application>
-
-    <!-- Pozwolenia na dostęp do internetu i stan sieci -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
 </manifest>

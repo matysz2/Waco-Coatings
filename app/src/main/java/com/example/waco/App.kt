@@ -9,5 +9,8 @@ class App : Application() {
         super.onCreate()
         val firebaseApp = FirebaseApp.initializeApp(this)
         Log.d("FirebaseInit", "Firebase initialized: ${firebaseApp != null}")
+
+
     }
+
 }

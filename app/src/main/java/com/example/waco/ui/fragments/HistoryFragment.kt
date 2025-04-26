@@ -33,55 +33,27 @@ class HistoryFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.historyRecyclerView)
         adapter = OrderHistoryAdapter(orders) { order ->
-            // Otwórz szczegóły zamówienia
             val intent = Intent(activity, OrderDetailsActivity::class.java)
             intent.putExtra("orderId", order.orderId)
             startActivity(intent)
-
-            // Pobierz status zamówienia po kliknięciu
-            fetchOrderStatus(order.orderId)
         }
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
+        return view
+    }
+
+    override fun onResume() {
+        super.onResume()
         val userId = getUserIdFromMemory()
         if (userId != -1) {
             fetchOrders(userId)
         } else {
             Toast.makeText(context, "Błąd: brak użytkownika", Toast.LENGTH_SHORT).show()
         }
-
-        return view
     }
 
-    // Funkcja do pobierania statusu zamówienia
-    private fun fetchOrderStatus(orderId: Int) {
-        val service = RetrofitInstance.create()
-        val call = service.getOrderStatus(orderId)
-
-        call.enqueue(object : Callback<OrderStatusResponse> {
-            override fun onResponse(call: Call<OrderStatusResponse>, response: Response<OrderStatusResponse>) {
-                if (response.isSuccessful) {
-                    val orderStatus = response.body()
-                    if (orderStatus != null) {
-                        // Zaktualizuj UI - wyświetl status zamówienia
-                        Toast.makeText(context, "Status zamówienia #${orderStatus.orderId}: ${orderStatus.status}", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Log.e("HistoryFragment", "Błąd pobierania statusu zamówienia. Kod odpowiedzi: ${response.code()}")
-                    Toast.makeText(context, "Błąd pobierania statusu", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<OrderStatusResponse>, t: Throwable) {
-                Log.e("HistoryFragment", "Błąd połączenia: ${t.message}")
-                Toast.makeText(context, "Błąd połączenia: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    // Funkcja do pobierania zamówień użytkownika
     private fun fetchOrders(userId: Int) {
         val service = RetrofitInstance.create()
         val call = service.getOrders(userId)
@@ -110,7 +82,6 @@ class HistoryFragment : Fragment() {
         })
     }
 
-    // Funkcja do pobrania user_id z pamięci
     private fun getUserIdFromMemory(): Int {
         val sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getString("user_id", "") ?: ""

@@ -11,7 +11,11 @@ composeBom = "2024.04.01"
 appcompat = "1.7.0"
 identityCredential = "20231002"
 glide = "4.16.0"
+opencvAndroid = "4.5.5"
+opencvAndroidVersion = "4.5.3"
+opencvOpencvAndroid = "4.5.1"
 securityCryptoKtx = "1.0.0"
+volley = "1.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +37,10 @@ identity-credential = { group = "com.android.identity", name = "identity-credent
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoKtx" }
+opencv-android = { module = "org.opencv:opencv-android", version.ref = "opencvAndroid" }
+opencv-android-v451 = { module = "org.opencv:opencv-android", version.ref = "opencvOpencvAndroid" }
+opencv-android-v453 = { module = "org.opencv:opencv-android", version.ref = "opencvAndroidVersion" }
+volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
