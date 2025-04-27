@@ -1,26 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".camera.CameraViewFragment">
 
-    <!-- Podgląd z kamery -->
+    <!-- Podgląd kamery -->
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Nakładka - kwadrat -->
-    <com.example.waco.custom.TransparentOverlayView
-        android:id="@+id/overlayView"
+    <!-- Nakładka rysowania -->
+    <com.example.waco.camera.DrawingOverlay
+        android:id="@+id/drawingOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Przefiltrowany obraz -->
+    <!-- Opcjonalny obraz do efektów -->
     <ImageView
         android:id="@+id/recoloredImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
-        android:alpha="0.5" /> <!-- 50% przeźroczystość -->
+        android:alpha="0.5"
+        android:visibility="gone" />
+
+    <!-- Dolne panele sterowania -->
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="#66000000">
+
+        <!-- Rząd przycisków -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/undoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cofnij"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp" />
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zapisz"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp" />
+
+            <Button
+                android:id="@+id/clearButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wyczyść"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp" />
+
+            <Switch
+                android:id="@+id/cameraSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="Kamera"
+                tools:ignore="UseSwitchCompatOrMaterialXml"
+                android:layout_margin="4dp" />
+
+        </LinearLayout>
+
+        <!-- Suwak rozmiaru pędzla -->
+        <SeekBar
+            android:id="@+id/brushSizeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="50"
+            android:progress="5"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
 
 </FrameLayout>

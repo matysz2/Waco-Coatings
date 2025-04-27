@@ -25,21 +25,15 @@
         <item
             android:title="SPRAWDZ W APARACIE KOLOR"
             android:enabled="false" />
-
         <item
             android:id="@+id/check_ral_camera"
             android:title="KOLORY RAL CLASSIC K7"
             android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
-
         <item
-            android:id="@+id/nav_polmat"
-            android:title="KOLORY PÓŁMAT"
+            android:id="@+id/check_ncs_camera"
+            android:title="KOLORY NCS 2050"
             android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
 
-        <item
-            android:id="@+id/nav_mat"
-            android:title="KOLORY MAT"
-            android:icon="@drawable/dollar" /><!-- Ikona Androida -->
     </group>
 
     <group android:id="@+id/nav_group_exit">

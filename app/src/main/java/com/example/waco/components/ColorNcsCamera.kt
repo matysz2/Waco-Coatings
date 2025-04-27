@@ -14,7 +14,7 @@ import com.example.waco.adapter.ColorListAdapter
 import com.example.waco.camera.CameraViewFragment
 import com.example.waco.data.Color
 
-class ColorRalCamera : AppCompatActivity() {
+class ColorNcsCamera : AppCompatActivity() {
 
     private lateinit var adapter: ColorListAdapter
     private lateinit var searchView: SearchView
@@ -27,12 +27,9 @@ class ColorRalCamera : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "KOLORY RAL CLASSIC K7"
+        supportActionBar?.title = "Kolory NCS 2050"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        toolbar.setNavigationOnClickListener { finish() }
 
         recyclerView = findViewById(R.id.recyclerView)
         searchView = findViewById(R.id.searchView)
@@ -40,7 +37,6 @@ class ColorRalCamera : AppCompatActivity() {
         adapter = ColorListAdapter(colorList) { selectedColor ->
             openCameraWithColor(selectedColor)
         }
-
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
@@ -50,7 +46,7 @@ class ColorRalCamera : AppCompatActivity() {
             override fun onQueryTextSubmit(query: String?) = false
             override fun onQueryTextChange(newText: String?): Boolean {
                 val filteredList = colorList.filter {
-                    it.name.contains(newText ?: "", ignoreCase = true)
+                    it.name.contains(newText.orEmpty(), ignoreCase = true)
                 }
                 adapter.updateData(filteredList)
                 return true
@@ -60,37 +56,34 @@ class ColorRalCamera : AppCompatActivity() {
 
     private fun fetchColorsFromServer() {
         val url = "http://waco.atwebpages.com/waco/get_colors_rgb.php"
-
         val request = JsonArrayRequest(
             url,
             { response ->
                 val newList = mutableListOf<Color>()
                 for (i in 0 until response.length()) {
                     val obj = response.getJSONObject(i)
-                    val name = obj.getString("name")
-                    val r = obj.getInt("r")
-                    val g = obj.getInt("g")
-                    val b = obj.getInt("b")
-
-                    val item = Color(name, r, g, b)
-                    newList.add(item)
+                    val color = Color(
+                        obj.getString("name"),
+                        obj.getInt("r"),
+                        obj.getInt("g"),
+                        obj.getInt("b")
+                    )
+                    newList.add(color)
                 }
                 colorList.clear()
                 colorList.addAll(newList)
                 adapter.updateData(colorList)
             },
-            { error ->
-                Toast.makeText(this, "Błąd połączenia", Toast.LENGTH_LONG).show()
+            {
+                Toast.makeText(this, "Błąd ładowania kolorów!", Toast.LENGTH_SHORT).show()
             }
         )
-
         Volley.newRequestQueue(this).add(request)
     }
 
     private fun openCameraWithColor(color: Color) {
-        val fragment = CameraViewFragment.newInstance(color.r, color.g, color.b)
         supportFragmentManager.beginTransaction()
-            .replace(android.R.id.content, fragment)
+            .replace(android.R.id.content, CameraViewFragment.newInstance(color))
             .addToBackStack(null)
             .commit()
     }

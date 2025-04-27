@@ -4,6 +4,7 @@ import android.graphics.Color as AndroidColor
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
 import com.example.waco.data.Color
@@ -27,9 +28,11 @@ class ColorListAdapter(
 
     inner class ColorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val colorSquare: View = itemView.findViewById(R.id.colorSquare)
+        private val colorName: TextView = itemView.findViewById(R.id.colorName)
 
         fun bind(color: Color) {
             colorSquare.setBackgroundColor(AndroidColor.rgb(color.r, color.g, color.b))
+            colorName.text = color.name
             itemView.setOnClickListener {
                 onColorClick(color)
             }

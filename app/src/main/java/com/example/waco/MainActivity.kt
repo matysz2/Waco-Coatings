@@ -15,6 +15,7 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import com.example.waco.components.AboutWacoActivity
 import com.example.waco.components.ColorListActivity
+import com.example.waco.components.ColorNcsCamera
 import com.example.waco.components.ColorRGBListActivity
 import com.example.waco.components.ColorRalCamera
 import com.example.waco.components.ContactActivity
@@ -57,8 +58,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.check_colors -> { goToCheckColors() }
                 R.id.check_ncs -> {goToCheckNcs()}
                 R.id.check_ral_camera -> {goToCheckRalCamera()}
-                R.id.nav_polmat -> {}
-                R.id.nav_mat -> {}
+                R.id.check_ncs_camera -> {goToCheckNcsCamera()}
+
                 R.id.nav_finish -> {
                     showExitDialog()
                 }
@@ -100,6 +101,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun goToCheckNcs() {
         val intent = Intent(this, ColorRGBListActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    }
+
+    private fun goToCheckNcsCamera() {
+        val intent = Intent(this, ColorNcsCamera::class.java)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
