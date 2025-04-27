@@ -10,12 +10,12 @@
         <item
             android:id="@+id/check_colors"
             android:title="KOLORY RAL K7"
-            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+            android:icon="@drawable/ral" />
 
         <item
             android:id="@+id/check_ncs"
             android:title="KOLORY NCS2050"
-            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+            android:icon="@drawable/ncs" />
 
 
     </group>
@@ -28,11 +28,11 @@
         <item
             android:id="@+id/check_ral_camera"
             android:title="KOLORY RAL CLASSIC K7"
-            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+            android:icon="@drawable/camera" /> <!-- Ikona Androida -->
         <item
             android:id="@+id/check_ncs_camera"
             android:title="KOLORY NCS 2050"
-            android:icon="@drawable/dollar" /> <!-- Ikona Androida -->
+            android:icon="@drawable/camera" /> <!-- Ikona Androida -->
 
     </group>
 

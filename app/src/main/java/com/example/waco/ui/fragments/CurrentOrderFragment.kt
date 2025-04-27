@@ -2,12 +2,12 @@ package com.example.waco.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log // <-- DODAJ IMPORT
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +21,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.Toast
 
 class CurrentOrderFragment : Fragment() {
 
@@ -45,7 +46,7 @@ class CurrentOrderFragment : Fragment() {
 
         submitButton.setOnClickListener {
             animateButton(submitButton)
-            submitOrder() // Od razu składamy zamówienie
+            submitOrder()
         }
 
         return view
@@ -66,11 +67,8 @@ class CurrentOrderFragment : Fragment() {
 
     private fun submitOrder() {
         val comment = commentEditText.text.toString().trim()
-
-        // Pobieramy dane użytkownika z SharedPreferences
         val (userId, email) = getUserData()
 
-        // Tworzymy obiekt OrderRequest, który będzie zawierał dane użytkownika
         val orderRequest = OrderRequest(
             userId = userId,
             email = email,
@@ -80,7 +78,6 @@ class CurrentOrderFragment : Fragment() {
             }
         )
 
-        // Generowanie podsumowania zamówienia
         val orderSummary = generateOrderSummary(orderRequest)
 
         showOrderSummaryDialog(orderSummary) {
@@ -92,7 +89,6 @@ class CurrentOrderFragment : Fragment() {
         val stringBuilder = StringBuilder()
         stringBuilder.append("Komentarz: ${orderRequest.comment}\n\n")
         stringBuilder.append("Produkty:\n")
-        // Zmiana z 'items' na 'products'
         orderRequest.products.forEach { item ->
             stringBuilder.append("- ${item.product_name} x${item.quantity}\n")
         }
@@ -113,17 +109,18 @@ class CurrentOrderFragment : Fragment() {
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.isSuccessful) {
-                        // Po złożeniu zamówienia, wyświetlamy komunikat
+                        Log.i("ORDER", "Sukces! Odpowiedź: ${response.body()?.string()}")
                         showOrderStatusDialog("Zamówienie złożone!", R.drawable.success_image)
-                        // Czyścimy zamówienie po sukcesie
                         OrderManager.clear()
                         orderAdapter.updateOrder(OrderManager.getCurrentOrder().toMutableList())
                     } else {
+                        Log.e("ORDER", "Błąd serwera! Kod: ${response.code()}, Treść: ${response.errorBody()?.string()}")
                         showOrderStatusDialog("Błąd podczas składania zamówienia", R.drawable.error_image)
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.e("ORDER", "Błąd sieciowy! ${t.localizedMessage}")
                     showOrderStatusDialog("Błąd sieciowy", R.drawable.error_image)
                 }
             })
@@ -133,7 +130,7 @@ class CurrentOrderFragment : Fragment() {
         val builder = android.app.AlertDialog.Builder(requireContext())
         builder.setTitle("Status zamówienia")
         builder.setMessage(message)
-        builder.setIcon(imageResId) // Dodajemy obrazek do dialogu
+        builder.setIcon(imageResId)
         builder.setPositiveButton("OK", null)
         builder.show()
     }

@@ -27,7 +27,7 @@ class ColorRalCamera : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "Kolory HEX"
+        supportActionBar?.title = "Kolory RAL CLASSIC K7"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { finish() }
 
