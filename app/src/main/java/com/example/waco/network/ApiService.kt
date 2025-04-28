@@ -1,4 +1,5 @@
 package com.example.waco.network
+import com.example.waco.data.ColorResponse
 import com.example.waco.data.Order
 import com.example.waco.data.OrderDetails
 import com.example.waco.data.OrderRequest
@@ -61,6 +62,15 @@ interface ApiService {
 
     @GET("get_order_details.php")
     fun getOrderDetails(@Query("order_id") orderId: Int): Call<OrderDetails>
+
+
+
+        @FormUrlEncoded
+        @POST("find_colors.php")
+        fun sendColor(
+            @Field("colorHex") colorHex: String,
+            @Field("colorRGB") colorRGB: String
+        ): Call<ColorResponse> // <- odpowiedź JSON
 
 }
 

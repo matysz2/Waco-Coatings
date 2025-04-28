@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@android:color/black">
+
+    <TextView
+        android:id="@+id/textColorName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp"
+        android:text="Nazwa koloru" />
+
+    <TextView
+        android:id="@+id/textColorHex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp"
+        android:text="Hex" />
+
+    <TextView
+        android:id="@+id/textColorRGB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="24dp"
+        android:text="RGB" />
+
+    <Button
+        android:id="@+id/btnReturn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wróć"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#FF6200EE"
+        android:textColor="#FFFFFF"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:stateListAnimator="@null"
+        android:background="@drawable/rounded_button" />
+
+    <Button
+        android:id="@+id/btnShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Udostępnij"
+        android:backgroundTint="#FF6200EE"
+        android:textColor="#FFFFFF"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:stateListAnimator="@null"
+        android:background="@drawable/rounded_button" />
+
+</LinearLayout>

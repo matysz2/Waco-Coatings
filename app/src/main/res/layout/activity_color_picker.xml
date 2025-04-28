@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#121212">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:scaleType="centerCrop"
+        android:background="#E0E0E0"
+        android:contentDescription="Podgląd zdjęcia" />
+
+    <TextView
+        android:id="@+id/textSelectedColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wybierz kolor na zdjęciu"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:textColor="#FFFFFF"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/btnTakePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zrób zdjęcie"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#FF6200EE"
+        android:layout_marginTop="24dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:stateListAnimator="@null" />
+
+    <Button
+        android:id="@+id/btnPickPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wybierz z galerii"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#FF6200EE"
+        android:layout_marginTop="12dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:stateListAnimator="@null" />
+
+    <Button
+        android:id="@+id/btnSendColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wyślij kolor"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#FF6200EE"
+        android:layout_marginTop="24dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:stateListAnimator="@null" />
+
+</LinearLayout>

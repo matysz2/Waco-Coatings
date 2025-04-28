@@ -16,6 +16,7 @@ opencvAndroidVersion = "4.5.3"
 opencvOpencvAndroid = "4.5.1"
 securityCryptoKtx = "1.0.0"
 volley = "1.2.1"
+litertMetadata = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,7 @@ opencv-android = { module = "org.opencv:opencv-android", version.ref = "opencvAn
 opencv-android-v451 = { module = "org.opencv:opencv-android", version.ref = "opencvOpencvAndroid" }
 opencv-android-v453 = { module = "org.opencv:opencv-android", version.ref = "opencvAndroidVersion" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
+litert-metadata = { group = "com.google.ai.edge.litert", name = "litert-metadata", version.ref = "litertMetadata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

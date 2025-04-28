@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import com.example.waco.components.AboutWacoActivity
 import com.example.waco.components.ColorListActivity
 import com.example.waco.components.ColorNcsCamera
+import com.example.waco.components.ColorPickerActivity
 import com.example.waco.components.ColorRGBListActivity
 import com.example.waco.components.ColorRalCamera
 import com.example.waco.components.ContactActivity
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.check_ncs -> {goToCheckNcs()}
                 R.id.check_ral_camera -> {goToCheckRalCamera()}
                 R.id.check_ncs_camera -> {goToCheckNcsCamera()}
+                R.id.check_your_color -> {goToCheckYourColor()}
 
                 R.id.nav_finish -> {
                     showExitDialog()
@@ -116,6 +118,13 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
+
+    private fun goToCheckYourColor() {
+        val intent = Intent(this, ColorPickerActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    }
+
 
     // Animacja przejścia do nowej aktywności
     fun animateAndStart(view: View, destination: Class<*>) {

@@ -82,7 +82,6 @@ dependencies {
     // Networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
     // Other
     implementation(libs.identity.credential)
@@ -91,17 +90,23 @@ dependencies {
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("jp.wasabeef:glide-transformations:4.3.0")
+    implementation ("androidx.activity:activity-ktx:1.8.0")
+    implementation ("androidx.core:core-ktx:1.12.0")
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
 
     // CameraX
     implementation("androidx.camera:camera-core:1.3.0")
     implementation("androidx.camera:camera-camera2:1.3.0")
     implementation("androidx.camera:camera-lifecycle:1.3.0")
     implementation("androidx.camera:camera-view:1.3.0")
-
+    implementation ("org.tensorflow:tensorflow-lite:2.14.0") // lub nowsze
+    implementation ("org.tensorflow:tensorflow-lite-task-vision:0.4.1")
     // ✅ OpenCV (tylko jedno - przez libs)
 
     // Volley
     implementation(libs.volley)
+    implementation(libs.litert.metadata)
 
     // Tests
     testImplementation(libs.junit)

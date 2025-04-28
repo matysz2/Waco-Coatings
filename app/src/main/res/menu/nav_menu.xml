@@ -33,6 +33,10 @@
             android:id="@+id/check_ncs_camera"
             android:title="KOLORY NCS 2050"
             android:icon="@drawable/camera" /> <!-- Ikona Androida -->
+        <item
+            android:id="@+id/check_your_color"
+            android:title="PRZEŚLIJ KOLOR"
+            android:icon="@drawable/camera" />
 
     </group>
 
