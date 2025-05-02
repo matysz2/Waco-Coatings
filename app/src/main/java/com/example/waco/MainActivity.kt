@@ -22,6 +22,7 @@ import com.example.waco.components.ColorRalCamera
 import com.example.waco.components.ContactActivity
 import com.example.waco.components.OfferActivity
 import com.example.waco.components.LoginActivity
+import com.example.waco.components.LoginAdminActivity
 import com.example.waco.components.OrderActivity
 
 
@@ -82,11 +83,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onOrderClick(view: View) {
-        animateAndStart(view, OrderActivity::class.java)
+        animateAndStart(view, LoginActivity::class.java)
     }
 
     fun onLoginClick(view: View) {
-        animateAndStart(view, LoginActivity::class.java)
+        animateAndStart(view, LoginAdminActivity::class.java)
     }
     fun onContactClick(view: View) {
         animateAndStart(view, ContactActivity::class.java)

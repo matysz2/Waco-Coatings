@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -54,29 +55,35 @@ class ColorPickerActivity : AppCompatActivity() {
         btnSendColor.setOnClickListener { sendColorToServer() }
         imageView.setOnTouchListener { v, event ->
             selectedBitmap?.let { bitmap ->
-                val imageViewWidth = imageView.width.toFloat()
-                val imageViewHeight = imageView.height.toFloat()
+                val imageMatrix = imageView.imageMatrix
+                val drawable = imageView.drawable ?: return@let
 
-                val bitmapWidth = bitmap.width.toFloat()
-                val bitmapHeight = bitmap.height.toFloat()
+                val values = FloatArray(9)
+                imageMatrix.getValues(values)
 
-                // Oblicz skalę
-                val scaleX = bitmapWidth / imageViewWidth
-                val scaleY = bitmapHeight / imageViewHeight
+                val scaleX = values[Matrix.MSCALE_X]
+                val scaleY = values[Matrix.MSCALE_Y]
+                val transX = values[Matrix.MTRANS_X]
+                val transY = values[Matrix.MTRANS_Y]
 
-                // Skoryguj współrzędne kliknięcia
-                val x = (event.x * scaleX).toInt()
-                val y = (event.y * scaleY).toInt()
+                // Współrzędne kliknięcia w ImageView
+                val touchX = (event.x - transX) / scaleX
+                val touchY = (event.y - transY) / scaleY
+
+                val x = touchX.toInt()
+                val y = touchY.toInt()
 
                 if (x in 0 until bitmap.width && y in 0 until bitmap.height) {
                     val pixel = bitmap.getPixel(x, y)
                     selectedColorHex = String.format("#%06X", 0xFFFFFF and pixel)
                     selectedColorRGB = "${Color.red(pixel)},${Color.green(pixel)},${Color.blue(pixel)}"
                     textSelectedColor.text = "Wybrany kolor: $selectedColorHex\nRGB: $selectedColorRGB"
+                    android.util.Log.d("ColorPicker", "Klik x=$x y=$y, kolor=$selectedColorHex")
                 }
             }
             true
         }
+
 
 
         textSelectedColor.setOnClickListener {

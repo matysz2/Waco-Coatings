@@ -98,14 +98,12 @@
         <activity android:name="com.example.waco.components.ColorResultActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <!-- Jeśli dodasz np. CameraObjectActivity -->
-        <!--
-        <activity android:name="com.example.waco.components.CameraObjectActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true" />
-        -->
+        <activity android:name="com.example.waco.components.LoginAdminActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <!-- Firebase Messaging Service -->
+        <activity android:name="com.example.waco.components.DashboardActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <service
             android:name=".network.MyFirebaseMessagingService"
             android:exported="false">

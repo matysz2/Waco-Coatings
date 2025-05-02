@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_invoices"
+        android:icon="@drawable/ic_invoice"
+        android:title="Faktury" />
+    <item
+        android:id="@+id/navigation_orders"
+        android:icon="@drawable/ic_order"
+        android:title="Zamówienia" />
+    <item
+        android:id="@+id/navigation_pricing"
+        android:icon="@drawable/ic_princing"
+        android:title="Cennik" />
+    <item
+        android:id="@+id/navigation_account"
+        android:icon="@drawable/ic_account"
+        android:title="Konto" />
+</menu>

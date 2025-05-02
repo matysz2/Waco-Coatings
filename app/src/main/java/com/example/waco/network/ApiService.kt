@@ -1,5 +1,7 @@
 package com.example.waco.network
 import com.example.waco.data.ColorResponse
+import com.example.waco.data.Invoice
+import com.example.waco.data.InvoiceResponse
 import com.example.waco.data.Order
 import com.example.waco.data.OrderDetails
 import com.example.waco.data.OrderRequest
@@ -71,6 +73,36 @@ interface ApiService {
             @Field("colorHex") colorHex: String,
             @Field("colorRGB") colorRGB: String
         ): Call<ColorResponse> // <- odpowiedź JSON
+
+
+    @FormUrlEncoded
+    @POST("loginadmin.php")
+    fun loginUser(
+        @Field("email") email: String,
+        @Field("password") password: String
+    ): Call<ResponseBody>
+
+
+    @FormUrlEncoded
+    @POST("get_invoices.php")
+    fun getInvoices(
+        @Field("user_id") userId: Int
+    ): Call<InvoiceResponse>
+
+
+    @GET("get_all_invoices.php")
+    fun getAllInvoices(): Call<List<Invoice>>
+
+
+    @GET("get_all_orders.php")
+    fun getAllOrders(): Call<List<Order>>
+
+
+    @GET("get_last_order.php")
+    fun getLatestOrder(): Call<ResponseBody>
+
+    @GET("get_last_invoice.php")
+    fun getLatestInvoice(): Call<ResponseBody>
 
 }
 

@@ -16,5 +16,7 @@
     <!-- Dodatkowe kolory aplikacji -->
     <color name="colorPrimary">#6200EE</color> <!-- Możesz zmienić kolor główny -->
     <color name="colorBackground">#F5F5F5</color> <!-- Jasny szary -->
-
+    <color name="bottom_nav_background">#F5F5F5</color>
+    <color name="bottom_nav_icon_active">#000000</color>
+    <color name="bottom_nav_icon_inactive">#888888</color>
 </resources>
