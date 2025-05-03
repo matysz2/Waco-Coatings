@@ -100,6 +100,8 @@ interface ApiService {
     @GET("dashboard_data.php")
     fun getDashboardData(@Query("user_id") userId: String): Call<ResponseBody>
 
+    @GET("get_invoices.php")
+    fun getInvoices(@Query("user_id") userId: String): Call<List<Invoice>>
 
 
 }

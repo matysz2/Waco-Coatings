@@ -70,7 +70,9 @@ class DashboardActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_invoices -> {
-                    Toast.makeText(this, "Faktury", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, InvoicesActivity::class.java)
+                    startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.navigation_orders -> {
