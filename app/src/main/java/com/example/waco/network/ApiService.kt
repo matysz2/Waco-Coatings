@@ -97,12 +97,10 @@ interface ApiService {
     @GET("get_all_orders.php")
     fun getAllOrders(): Call<List<Order>>
 
+    @GET("dashboard_data.php")
+    fun getDashboardData(@Query("user_id") userId: String): Call<ResponseBody>
 
-    @GET("get_last_order.php")
-    fun getLatestOrder(): Call<ResponseBody>
 
-    @GET("get_last_invoice.php")
-    fun getLatestInvoice(): Call<ResponseBody>
 
 }
 

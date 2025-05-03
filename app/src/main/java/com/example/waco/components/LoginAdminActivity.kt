@@ -95,7 +95,9 @@ class LoginAdminActivity : AppCompatActivity() {
                         if (status == "success") {
                             val userId = json.optString("user_id")
                             val userEmail = json.optString("email")
-                            Log.d("LoginAdmin", "🟢 Użytkownik OK: ID=$userId, Email=$userEmail")
+                            val userName = json.optString("name") // nowy element
+
+                            Log.d("LoginAdmin", "🟢 Użytkownik OK: ID=$userId, Email=$userEmail, Name=$userName")
 
                             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
@@ -106,6 +108,7 @@ class LoginAdminActivity : AppCompatActivity() {
                                     sharedPref.edit().apply {
                                         putBoolean("admin_logged_in", true)
                                         putString("user_id", userId)
+                                        putString("name", userName)
                                         putString("email", userEmail)
                                         putString("firebase_token", token)
                                         apply()
@@ -114,62 +117,33 @@ class LoginAdminActivity : AppCompatActivity() {
                                     updateFirebaseToken(userId.toInt(), token)
 
                                     runOnUiThread {
-                                        Toast.makeText(
-                                            this@LoginAdminActivity,
-                                            "Zalogowano pomyślnie",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        startActivity(
-                                            Intent(
-                                                this@LoginAdminActivity,
-                                                DashboardActivity::class.java
-                                            )
-                                        )
+                                        Toast.makeText(this@LoginAdminActivity, "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show()
+                                        startActivity(Intent(this@LoginAdminActivity, DashboardActivity::class.java))
                                         finish()
                                     }
                                 } else {
                                     Log.e("LoginAdmin", "🔴 Nie udało się pobrać tokena Firebase")
-                                    Toast.makeText(
-                                        this@LoginAdminActivity,
-                                        "Nie udało się pobrać tokena",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(this@LoginAdminActivity, "Nie udało się pobrać tokena", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         } else {
                             val errorMsg = json.optString("message", "Nieznany błąd logowania")
                             Log.e("LoginAdmin", "🔴 Logowanie nieudane: $errorMsg")
-                            Toast.makeText(this@LoginAdminActivity, errorMsg, Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(this@LoginAdminActivity, errorMsg, Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
                         Log.e("LoginAdmin", "🔴 Błąd JSON: ${e.localizedMessage}", e)
-                        Toast.makeText(
-                            this@LoginAdminActivity,
-                            "Błąd JSON: ${e.localizedMessage}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(this@LoginAdminActivity, "Błąd JSON: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Log.e(
-                        "LoginAdmin",
-                        "🔴 Błąd odpowiedzi serwera: ${response.errorBody()?.string()}"
-                    )
-                    Toast.makeText(
-                        this@LoginAdminActivity,
-                        "Błąd odpowiedzi serwera",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Log.e("LoginAdmin", "🔴 Błąd odpowiedzi serwera: ${response.errorBody()?.string()}")
+                    Toast.makeText(this@LoginAdminActivity, "Błąd odpowiedzi serwera", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<okhttp3.ResponseBody>, t: Throwable) {
                 Log.e("LoginAdmin", "🔴 Błąd połączenia: ${t.localizedMessage}", t)
-                Toast.makeText(
-                    this@LoginAdminActivity,
-                    "Błąd połączenia: ${t.localizedMessage}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this@LoginAdminActivity, "Błąd połączenia: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -183,21 +157,13 @@ class LoginAdminActivity : AppCompatActivity() {
                     Log.d("LoginAdmin", "🟢 Token Firebase zaktualizowany poprawnie.")
                 } else {
                     Log.e("LoginAdmin", "🔴 Błąd przy aktualizacji tokenu: ${response.code()}")
-                    Toast.makeText(
-                        this@LoginAdminActivity,
-                        "Błąd przy aktualizacji tokenu",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@LoginAdminActivity, "Błąd przy aktualizacji tokenu", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
                 Log.e("LoginAdmin", "🔴 Błąd połączenia z aktualizacją tokenu: ${t.message}", t)
-                Toast.makeText(
-                    this@LoginAdminActivity,
-                    "Błąd połączenia z aktualizacją tokenu",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this@LoginAdminActivity, "Błąd połączenia z aktualizacją tokenu", Toast.LENGTH_SHORT).show()
             }
         })
     }

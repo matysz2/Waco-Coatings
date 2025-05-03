@@ -7,23 +7,23 @@
             <item
                 android:id="@+id/nav_podklady"
                 android:title="Podkłady"
-                android:icon="@drawable/ic_podklady" />
+                android:icon="@drawable/ikona" />
             <item
                 android:id="@+id/nav_lakiery"
                 android:title="Lakiery"
-                android:icon="@drawable/ic_lakiery" />
+                android:icon="@drawable/ikona" />
             <item
                 android:id="@+id/nav_katalizatory"
                 android:title="Katalizatory"
-                android:icon="@drawable/ic_katalizatory" />
+                android:icon="@drawable/ikona" />
             <item
                 android:id="@+id/nav_rozpuszczalniki"
                 android:title="Rozpuszczalniki"
-                android:icon="@drawable/ic_rozpuszczalniki" />
+                android:icon="@drawable/ikona" />
             <item
                 android:id="@+id/nav_dodatki"
                 android:title="Dodatki"
-                android:icon="@drawable/ic_dodatki" />
+                android:icon="@drawable/ikona" />
         </menu>
     </item>
 
@@ -33,18 +33,12 @@
             <item
                 android:id="@+id/nav_kolory_ral"
                 android:title="Kolory RAL Classic K7"
-                android:icon="@drawable/ic_ral" />
+                android:icon="@drawable/ral" />
             <item
                 android:id="@+id/nav_kolory_ncs"
                 android:title="Kolory NCS 2050"
-                android:icon="@drawable/ic_ncs" />
+                android:icon="@drawable/ncs" />
         </menu>
     </item>
-
-    <!-- Wyloguj się -->
-    <item
-        android:id="@+id/nav_logout"
-        android:title="Wyloguj się"
-        android:icon="@drawable/ic_logout" />
 
 </menu>
