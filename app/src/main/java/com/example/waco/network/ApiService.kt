@@ -8,12 +8,14 @@ import com.example.waco.data.OrderRequest
 import com.example.waco.data.OrderStatusResponse
 import com.example.waco.data.Product
 import com.example.waco.data.Product2
+import com.example.waco.model.AccountUpdateRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -102,6 +104,12 @@ interface ApiService {
 
     @GET("get_invoices.php")
     fun getInvoices(@Query("user_id") userId: String): Call<List<Invoice>>
+
+    @Headers("Content-Type: application/json")
+    @POST("update_account.php")
+    fun updateAccountData(@Body requestBody: AccountUpdateRequest): Call<ResponseBody>
+
+
 
 
 }

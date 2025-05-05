@@ -6,14 +6,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.waco.MainActivity
 import com.example.waco.R
+import com.example.waco.model.AccountUpdateRequest
 import com.example.waco.network.ApiClient
 import com.example.waco.network.ApiService
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -40,6 +43,11 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private var invoiceDownloadUrl: String? = null
 
+    private lateinit var nameEditText: EditText
+    private lateinit var emailEditText: EditText
+    private lateinit var passwordEditText: EditText
+    private lateinit var saveButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
@@ -61,11 +69,63 @@ class DashboardActivity : AppCompatActivity() {
         orderPriceTextView = findViewById(R.id.orderPriceTextView)
         orderDateTextView = findViewById(R.id.orderDateTextView)
 
+        val lastInvoiceCard = findViewById<CardView>(R.id.lastInvoiceCard)
+        val lastOrderCard = findViewById<CardView>(R.id.lastOrderCard)
+        val accountInfoCard = findViewById<CardView>(R.id.accountInfoCard)
+
         accountNameTextView = findViewById(R.id.accountNameTextView)
         accountEmailTextView = findViewById(R.id.accountEmailTextView)
 
         bottomNav = findViewById(R.id.bottomNavigationView)
         apiService = ApiClient.getClient().create(ApiService::class.java)
+
+        nameEditText = findViewById(R.id.editTextName)
+        emailEditText = findViewById(R.id.editTextEmail)
+        passwordEditText = findViewById(R.id.editTextPassword)
+        saveButton = findViewById(R.id.saveAccountButton)
+
+        // Ukryj na starcie
+        nameEditText.visibility = View.GONE
+        emailEditText.visibility = View.GONE
+        passwordEditText.visibility = View.GONE
+        saveButton.visibility = View.GONE
+
+        // ←←← TUTAJ DOKLEJ Twój kod:
+        saveButton.setOnClickListener {
+            val name = nameEditText.text.toString().trim()
+            val email = emailEditText.text.toString().trim()
+            val password = passwordEditText.text.toString().trim()
+            val userId = getSharedPreferences("admin_data", MODE_PRIVATE).getString("user_id", null)
+
+            if (userId == null) {
+                Toast.makeText(this, "Brak ID użytkownika", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val request = AccountUpdateRequest(userId, name, email, password)
+            val call = apiService.updateAccountData(request)
+
+            call.enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@DashboardActivity, "Dane zapisane", Toast.LENGTH_SHORT).show()
+                        val sharedPref = getSharedPreferences("admin_data", MODE_PRIVATE)
+                        sharedPref.edit()
+                            .putString("user_id", userId)
+                            .putString("name", name)
+                            .putString("email", email)
+                            .putString("password", password)
+                            .apply()
+                    } else {
+                        Toast.makeText(this@DashboardActivity, "Błąd podczas zapisu", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Toast.makeText(this@DashboardActivity, "Błąd połączenia: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
 
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
@@ -84,9 +144,37 @@ class DashboardActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_account -> {
-                    Toast.makeText(this, "Konto", Toast.LENGTH_SHORT).show()
+
+                    // Pokaż pola edycji i wczytaj dane
+                    nameEditText.visibility = View.VISIBLE
+                    emailEditText.visibility = View.VISIBLE
+                    passwordEditText.visibility = View.VISIBLE
+                    saveButton.visibility = View.VISIBLE
+
+
+                    // Ukryj dane o fakturze
+                    invoiceNumberTextView.visibility = View.GONE
+                    invoiceAmountTextView.visibility = View.GONE
+                    invoiceDateTextView.visibility = View.GONE
+                    downloadInvoiceButton.visibility = View.GONE
+
+                    // Ukryj dane o zamówieniu
+                    orderNumberTextView.visibility = View.GONE
+                    orderAmountTextView.visibility = View.GONE
+                    orderPriceTextView.visibility = View.GONE
+                    orderDateTextView.visibility = View.GONE
+                    lastInvoiceCard.visibility = View.GONE
+                    lastOrderCard.visibility = View.GONE
+                    accountInfoCard.visibility = View.GONE
+
+                    val sharedPref = getSharedPreferences("admin_data", MODE_PRIVATE)
+                    nameEditText.setText(sharedPref.getString("name", ""))
+                    emailEditText.setText(sharedPref.getString("email", ""))
+                    passwordEditText.setText(sharedPref.getString("password", "")) // tylko jeśli trzymasz hasło lokalnie
+
                     true
                 }
+
                 else -> false
             }
         }
@@ -201,4 +289,5 @@ class DashboardActivity : AppCompatActivity() {
         accountNameTextView.text = "Nazwa konta: ${sharedPref.getString("name", "-")}"
         accountEmailTextView.text = "Email: ${sharedPref.getString("email", "-")}"
     }
+
 }
