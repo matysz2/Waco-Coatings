@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F5F5F5"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="12dp">
+
+    <!-- Wiersz 1: Numer zamówienia + Status -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#DDDDDD"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/textViewOrderId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Numer zamówienia: 123"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textViewOrderStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Status: Oczekujące"
+            android:textSize="14sp"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- Wiersz 2: Kwota + Data -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#DDDDDD"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/textViewOrderPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Kwota: 99.99 zł"
+            android:textSize="14sp"
+            android:textColor="#008000" />
+
+        <TextView
+            android:id="@+id/textViewOrderCreatedAt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Utworzono: 2024-12-31 10:30"
+            android:textSize="14sp"
+            android:textColor="#555555"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- Wiersz 3: Przycisk -->
+    <Button
+        android:id="@+id/buttonOrderDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Szczegóły zamówienia"
+        android:backgroundTint="#2196F3"
+        android:textColor="#FFFFFF" />
+</LinearLayout>

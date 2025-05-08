@@ -136,7 +136,9 @@ class DashboardActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_orders -> {
-                    Toast.makeText(this, "Zamówienia", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, OrdersActivity::class.java)
+                    startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.navigation_pricing -> {

@@ -107,6 +107,12 @@
         <activity android:name="com.example.waco.components.InvoicesActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity android:name="com.example.waco.components.OrdersActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name="com.example.waco.components.OrderItemsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <service
             android:name=".network.MyFirebaseMessagingService"
             android:exported="false">

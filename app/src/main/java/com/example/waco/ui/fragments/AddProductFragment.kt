@@ -58,7 +58,7 @@ class AddProductFragment : Fragment() {
             val query = searchView.query.toString().trim()
             if (query.isNotEmpty()) {
                 val matched = allProducts.find { it.name.equals(query, ignoreCase = true) }
-                val product = matched ?: Product(id = -1, name = query, quantity = 0.0)
+                val product = matched ?: Product(id = -1, name = query, quantity = 0.0, price = 0.0)
                 showQuantityDialog(product)
             } else {
                 Toast.makeText(requireContext(), "Wpisz nazwę produktu", Toast.LENGTH_SHORT).show()
