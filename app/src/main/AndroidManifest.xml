@@ -110,7 +110,10 @@
         <activity android:name="com.example.waco.components.OrdersActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name="com.example.waco.components.OrderItemsActivity"
+        <activity android:name="com.example.waco.components.OrderItemActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name="com.example.waco.components.OrdersDetailsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service

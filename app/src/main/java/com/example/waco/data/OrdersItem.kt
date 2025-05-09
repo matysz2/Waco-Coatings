@@ -2,12 +2,13 @@ package com.example.waco.data
 
 import com.google.gson.annotations.SerializedName
 
-data class OrderItem(
+
+data class OrdersItem(
     val id: Int,
     val orderId: String,
 
-    @SerializedName("product_name")
     val productName: String,
+
     val quantity: Int,
     val price: Double,
     val totalPrice: Double

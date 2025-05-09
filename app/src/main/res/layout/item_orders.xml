@@ -67,12 +67,14 @@
             android:gravity="end"/>
     </LinearLayout>
 
-    <!-- Wiersz 3: Przycisk -->
+    <!-- Wiersz 3: Przycisk szczegółów -->
     <Button
         android:id="@+id/buttonOrderDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Szczegóły zamówienia"
-        android:backgroundTint="#2196F3"
-        android:textColor="#FFFFFF" />
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:textColor="#FFFFFF"/>
+
+
 </LinearLayout>

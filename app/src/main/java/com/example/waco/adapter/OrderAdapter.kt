@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
-import com.example.waco.components.OrderItemsActivity
+import com.example.waco.components.OrderItemActivity
 import com.example.waco.data.Order
 
 class OrderAdapter(
@@ -41,7 +41,7 @@ class OrderAdapter(
 
         holder.buttonDetails.setOnClickListener {
             val context: Context = holder.itemView.context
-            val intent = Intent(context, OrderItemsActivity::class.java)
+            val intent = Intent(context, OrderItemActivity::class.java)
             intent.putExtra("order_id", order.orderId)
             context.startActivity(intent)
         }
