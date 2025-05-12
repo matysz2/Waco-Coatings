@@ -58,25 +58,31 @@ class CurrentOrderFragment : Fragment() {
         }
     }
 
-    private fun getUserData(): Pair<String, String> {
-        val sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getString("user_id", "") ?: ""
-        val email = sharedPreferences.getString("email", "") ?: ""
-        return Pair(userId, email)
+    private fun getUserData(): Triple<String, String, String> {
+        val userPrefs = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        val adminPrefs = requireContext().getSharedPreferences("admin_data", Context.MODE_PRIVATE)
+
+        val userId = userPrefs.getString("user_id", null) ?: adminPrefs.getString("user_id", "") ?: ""
+        val email = userPrefs.getString("email", null) ?: adminPrefs.getString("email", "") ?: ""
+        val prices = userPrefs.getString("prices", null) ?: adminPrefs.getString("prices", "") ?: ""
+
+        return Triple(userId, email, prices)
     }
+
 
     private fun submitOrder() {
         val comment = commentEditText.text.toString().trim()
-        val (userId, email) = getUserData()
-
+        val (userId, email, prices) = getUserData()
         val orderRequest = OrderRequest(
             userId = userId,
             email = email,
             comment = comment,
             products = OrderManager.getCurrentOrder().map {
                 ProductItem(product_name = it.name, quantity = it.quantity)
-            }
+            },
+            prices = prices // ← to dodajemy
         )
+
 
         val orderSummary = generateOrderSummary(orderRequest)
 

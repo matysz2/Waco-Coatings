@@ -8,5 +8,7 @@ data class OrderRequest(
     val userId: String,
     val email: String,
     val comment: String,
-    val products: List<ProductItem>
+    val products: List<ProductItem>,
+    val prices: String? = null // ← nowy parametr
+
 )

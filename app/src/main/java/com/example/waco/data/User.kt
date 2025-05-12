@@ -6,5 +6,7 @@ data class User(
     val email: String,
     val password: String,
     val message: String,
-    val fcmToken: String? = null  // Dodajemy pole fcmToken, które może być null, ponieważ nie zawsze jest dostępne
+    val fcmToken: String? = null,
+    val adminId: Int? = null,        // Dodane pole adminId jako Int?
+    val prices: String? = null       // Jeśli też chcesz trzymać prices z user_admin
 )

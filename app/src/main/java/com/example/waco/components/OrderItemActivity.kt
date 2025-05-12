@@ -17,6 +17,7 @@ import com.example.waco.MainActivity
 import com.example.waco.R
 import com.example.waco.adapter.OrderItemDetailsAdapter
 import com.example.waco.data.OrderItem
+import com.example.waco.data.OrdersItem
 import com.example.waco.network.ApiClient
 import com.example.waco.network.ApiService
 import retrofit2.Call
@@ -28,7 +29,7 @@ class OrderItemActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: OrderItemDetailsAdapter
     private lateinit var apiService: ApiService
-    private val orderItems = mutableListOf<OrderItem>()
+    private val orderItems = mutableListOf<OrdersItem>()
     private var orderId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +71,7 @@ class OrderItemActivity : AppCompatActivity() {
                 true
             }
             android.R.id.home -> {
-                val intent = Intent(this, DashboardActivity::class.java)
+                val intent = Intent(this, OrdersActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 startActivity(intent)
                 finish()
@@ -97,8 +98,8 @@ class OrderItemActivity : AppCompatActivity() {
     }
 
     private fun loadOrderItems(orderId: String) {
-        apiService.getOrderItems(orderId).enqueue(object : Callback<List<OrderItem>> {
-            override fun onResponse(call: Call<List<OrderItem>>, response: Response<List<OrderItem>>) {
+        apiService.getOrderItems(orderId).enqueue(object : Callback<List<OrdersItem>> {
+            override fun onResponse(call: Call<List<OrdersItem>>, response: Response<List<OrdersItem>>) {
                 if (response.isSuccessful) {
                     orderItems.clear()
                     response.body()?.let {
@@ -110,7 +111,7 @@ class OrderItemActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<OrderItem>>, t: Throwable) {
+            override fun onFailure(call: Call<List<OrdersItem>>, t: Throwable) {
                 Log.e("API", "Błąd połączenia: ${t.message}")
                 Toast.makeText(this@OrderItemActivity, "Błąd połączenia z serwerem", Toast.LENGTH_SHORT).show()
             }

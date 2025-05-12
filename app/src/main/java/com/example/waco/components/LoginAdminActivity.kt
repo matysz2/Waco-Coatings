@@ -95,6 +95,7 @@ class LoginAdminActivity : AppCompatActivity() {
                         if (status == "success") {
                             val userId = json.optString("user_id")
                             val userEmail = json.optString("email")
+                            val prices = json.optString("prices")
                             val userName = json.optString("name") // nowy element
 
                             Log.d("LoginAdmin", "🟢 Użytkownik OK: ID=$userId, Email=$userEmail, Name=$userName")
@@ -109,6 +110,7 @@ class LoginAdminActivity : AppCompatActivity() {
                                         putBoolean("admin_logged_in", true)
                                         putString("user_id", userId)
                                         putString("name", userName)
+                                        putString("price", prices)
                                         putString("email", userEmail)
                                         putString("firebase_token", token)
                                         apply()

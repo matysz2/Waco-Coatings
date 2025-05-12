@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.check_ncs -> {goToCheckNcs()}
                 R.id.check_ral_camera -> {goToCheckRalCamera()}
                 R.id.check_ncs_camera -> {goToCheckNcsCamera()}
-                R.id.check_your_color -> {goToCheckYourColor()}
 
                 R.id.nav_finish -> {
                     showExitDialog()

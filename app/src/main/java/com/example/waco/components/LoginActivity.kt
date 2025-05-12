@@ -29,21 +29,32 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 1. Sprawdzenie czy administrator jest zalogowany
+        val adminPrefs = getSharedPreferences("admin_data", Context.MODE_PRIVATE)
+        val adminId = adminPrefs.getString("user_id", null)
+        val adminEmail = adminPrefs.getString("email", null)
+        val adminToken = adminPrefs.getString("firebase_token", null)
+        val price = adminPrefs.getString("price", null)
 
-        // Sprawdzenie czy użytkownik jest już zalogowany
-        val sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
-        val userId = sharedPref.getString("user_id", null)
-        val userEmail = sharedPref.getString("email", null)
-        val firebaseToken = sharedPref.getString("firebase_token", null)
-
-        Log.d("LoginActivity", "Sprawdzanie zapisanych danych: userId=$userId, email=$userEmail, token=$firebaseToken")
-
-        if (!userId.isNullOrEmpty() && !userEmail.isNullOrEmpty() && !firebaseToken.isNullOrEmpty()) {
-            startActivity(Intent(this, OrderActivity::class.java))
+        if (!adminId.isNullOrEmpty() && !adminEmail.isNullOrEmpty() && !adminToken.isNullOrEmpty()) {
+            Log.d("LoginActivity", "Zalogowany admin: $adminEmail")
+            startActivity(Intent(this, OrderActivity::class.java)) // admin też trafia do OrderActivity
             finish()
             return
         }
 
+// 2. Sprawdzenie czy zwykły użytkownik jest zalogowany
+        val userPrefs = getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        val userId = userPrefs.getString("user_id", null)
+        val userEmail = userPrefs.getString("email", null)
+        val userToken = userPrefs.getString("firebase_token", null)
+
+        if (!userId.isNullOrEmpty() && !userEmail.isNullOrEmpty() && !userToken.isNullOrEmpty()) {
+            Log.d("LoginActivity", "Zalogowany użytkownik: $userEmail")
+            startActivity(Intent(this, OrderActivity::class.java))
+            finish()
+            return
+        }
         setContentView(R.layout.login_activity)
 
         // Inicjalizacja Firebase
@@ -76,6 +87,7 @@ class LoginActivity : AppCompatActivity() {
     private fun loginUser(email: String, password: String) {
         if (email.isBlank() || password.isBlank()) {
             Toast.makeText(this, "Proszę wprowadzić email i hasło", Toast.LENGTH_SHORT).show()
+            Log.w("LoginUser", "Puste dane logowania: email=$email, hasło=${password.length} znaków")
             return
         }
 
@@ -90,8 +102,11 @@ class LoginActivity : AppCompatActivity() {
             .post(formBody)
             .build()
 
+        Log.d("LoginUser", "Wysyłanie żądania logowania: $loginUrl")
+
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
+                Log.e("LoginUser", "Błąd połączenia: ${e.message}", e)
                 runOnUiThread {
                     Toast.makeText(this@LoginActivity, "Błąd połączenia: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                 }
@@ -99,29 +114,38 @@ class LoginActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call, response: Response) {
                 val responseBody = response.body?.string()
+                Log.d("LoginUser", "Odpowiedź serwera (status=${response.code}): $responseBody")
 
                 if (response.isSuccessful && responseBody != null) {
                     try {
                         val json = JSONObject(responseBody)
                         val status = json.optString("status")
+                        Log.d("LoginUser", "Status odpowiedzi JSON: $status")
 
                         if (status == "success") {
                             val userId = json.optString("user_id")
                             val userEmail = json.optString("email")
+                            val adminId = json.optString("admin_id")
+                            val prices = json.optString("prices")
+
+                            Log.d("LoginUser", "Dane użytkownika: userId=$userId, email=$userEmail, adminId=$adminId")
 
                             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     val token = task.result
-                                    Log.d("FirebaseToken", "Nowy token: $token")
+                                    Log.d("FirebaseToken", "Pobrano token: $token")
 
                                     val sharedPref = getSharedPreferences("user_data", Context.MODE_PRIVATE)
                                     sharedPref.edit().apply {
                                         putBoolean("is_logged_in", true)
                                         putString("user_id", userId)
                                         putString("email", userEmail)
+                                        putString("admin_id", adminId)
+                                        putString("prices", prices)
                                         putString("firebase_token", token)
                                         apply()
                                     }
+                                    Log.d("LoginUser", "Ceny z users_admin: $prices")
 
                                     updateFirebaseToken(userId, token)
 
@@ -131,6 +155,7 @@ class LoginActivity : AppCompatActivity() {
                                         finish()
                                     }
                                 } else {
+                                    Log.e("FirebaseToken", "Błąd pobierania tokenu", task.exception)
                                     runOnUiThread {
                                         Toast.makeText(this@LoginActivity, "Nie udało się pobrać tokena", Toast.LENGTH_SHORT).show()
                                     }
@@ -138,16 +163,19 @@ class LoginActivity : AppCompatActivity() {
                             }
                         } else {
                             val errorMsg = json.optString("message", "Nieznany błąd logowania")
+                            Log.w("LoginUser", "Błąd logowania: $errorMsg")
                             runOnUiThread {
                                 Toast.makeText(this@LoginActivity, errorMsg, Toast.LENGTH_SHORT).show()
                             }
                         }
                     } catch (e: Exception) {
+                        Log.e("LoginUser", "Błąd parsowania JSON: ${e.message}", e)
                         runOnUiThread {
                             Toast.makeText(this@LoginActivity, "Błąd JSON: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
                         }
                     }
                 } else {
+                    Log.e("LoginUser", "Nieudana odpowiedź serwera: ${response.code}")
                     runOnUiThread {
                         Toast.makeText(this@LoginActivity, "Błąd odpowiedzi serwera", Toast.LENGTH_SHORT).show()
                     }
@@ -155,6 +183,7 @@ class LoginActivity : AppCompatActivity() {
             }
         })
     }
+
 
     private fun updateFirebaseToken(userId: String, token: String) {
         val client = OkHttpClient()

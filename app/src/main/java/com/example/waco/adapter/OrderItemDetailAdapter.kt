@@ -7,8 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
 import com.example.waco.data.OrderItem
+import com.example.waco.data.OrdersItem
 
-class OrderItemDetailsAdapter(private val items: List<OrderItem>) :
+class OrderItemDetailsAdapter(private val items: List<OrdersItem>) :
     RecyclerView.Adapter<OrderItemDetailsAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

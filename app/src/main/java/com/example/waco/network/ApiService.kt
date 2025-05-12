@@ -117,7 +117,7 @@ interface ApiService {
     fun getOrders(@Query("user_id") userId: String): Call<List<Order>>
 
     @GET("getOrderItems.php")
-    fun getOrderItems(@Query("order_id") orderId: String): Call<List<OrderItem>>
+    fun getOrderItems(@Query("order_id") orderId: String): Call<List<OrdersItem>>
 
     @GET("get_orders_details.php")
     fun getOrdersDetails(@Query("order_id") orderId: String): Call<List<OrdersItem>>
