@@ -11,17 +11,17 @@ import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.example.waco.R
 import com.example.waco.MainActivity
+import com.example.waco.R
 import com.example.waco.ui.fragments.AddProductFragment
 import com.example.waco.ui.fragments.CurrentOrderFragment
 import com.example.waco.ui.fragments.HistoryFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class OrderActivity : AppCompatActivity() {
 
@@ -40,13 +40,13 @@ class OrderActivity : AppCompatActivity() {
         supportActionBar?.title = "Zamówienia"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // 🟢 Nowe: wczytywanie z user_data i admin_data
         val userPrefs = getSharedPreferences("user_data", MODE_PRIVATE)
         val adminPrefs = getSharedPreferences("admin_data", MODE_PRIVATE)
 
         val userId = userPrefs.getString("user_id", null) ?: adminPrefs.getString("user_id", null)
         val email = userPrefs.getString("email", null) ?: adminPrefs.getString("email", null)
         val firebaseToken = userPrefs.getString("firebase_token", null) ?: adminPrefs.getString("firebase_token", null)
+        val isAdmin = adminPrefs.contains("user_id")
 
         Log.d("OrderActivity", "Dane w SharedPreferences:")
         Log.d("OrderActivity", "user_id: $userId")
@@ -63,7 +63,7 @@ class OrderActivity : AppCompatActivity() {
 
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
-        val adapter = OrderPagerAdapter(this)
+        val adapter = OrderPagerAdapter(this, isAdmin)
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -133,24 +133,31 @@ class OrderActivity : AppCompatActivity() {
         builder.create().show()
     }
 
-    inner class OrderPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
-        override fun getItemCount(): Int = 3
+    inner class OrderPagerAdapter(
+        activity: FragmentActivity,
+        private val isAdmin: Boolean
+    ) : FragmentStateAdapter(activity) {
+
+        override fun getItemCount(): Int = if (isAdmin) 2 else 3
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> AddProductFragment()
                 1 -> CurrentOrderFragment()
-                2 -> HistoryFragment()
+                2 -> {
+                    if (!isAdmin) HistoryFragment()
+                    else throw IllegalStateException("Historia niedostępna dla admina")
+                }
                 else -> throw IllegalStateException("Nieprawidłowy numer zakładki")
             }
         }
 
-        fun getPageTitle(position: Int): CharSequence? {
+        fun getPageTitle(position: Int): CharSequence {
             return when (position) {
                 0 -> "Dodaj"
                 1 -> "Aktualne"
-                2 -> "Historia"
-                else -> null
+                2 -> if (!isAdmin) "Historia" else ""
+                else -> ""
             }
         }
     }

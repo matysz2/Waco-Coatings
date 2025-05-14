@@ -194,7 +194,19 @@ class DashboardActivity : AppCompatActivity() {
         loadDashboardData()
         loadAccountInfo()
     }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Intencjonalnie NIE wywołujemy super.onBackPressed(),
+        // bo ręcznie przechodzimy do DashboardActivity
+        goToDashboard()
+    }
 
+
+    private fun goToDashboard() {
+        val intent = Intent(this, DashboardActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
     override fun onSupportNavigateUp(): Boolean {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)

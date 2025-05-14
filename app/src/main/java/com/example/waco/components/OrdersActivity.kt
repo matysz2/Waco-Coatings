@@ -41,8 +41,6 @@ class OrdersActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewOrders)
         recyclerView.layoutManager = LinearLayoutManager(this)
         orderAdapter = OrderAdapter(orderList)
-
-
         recyclerView.adapter = orderAdapter
 
         apiService = ApiClient.getClient().create(ApiService::class.java)
@@ -62,13 +60,25 @@ class OrdersActivity : AppCompatActivity() {
                 true
             }
             android.R.id.home -> {
-                val intent = Intent(this, DashboardActivity::class.java)
-                startActivity(intent)
-                finish()
+                goToDashboard()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Intencjonalnie NIE wywołujemy super.onBackPressed(),
+        // bo ręcznie przechodzimy do DashboardActivity
+        goToDashboard()
+    }
+
+
+    private fun goToDashboard() {
+        val intent = Intent(this, DashboardActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun showLogoutDialog() {

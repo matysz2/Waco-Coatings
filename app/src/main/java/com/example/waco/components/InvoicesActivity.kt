@@ -60,7 +60,19 @@ class InvoicesActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_logout, menu)
         return true
     }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Intencjonalnie NIE wywołujemy super.onBackPressed(),
+        // bo ręcznie przechodzimy do DashboardActivity
+        goToDashboard()
+    }
 
+
+    private fun goToDashboard() {
+        val intent = Intent(this, DashboardActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.logout -> {

@@ -12,5 +12,6 @@ data class OrdersItem(
     val productName: String,
     val quantity: Double,
     val price: Double,
+    @SerializedName("total_price")
     val totalPrice: Double
 )
