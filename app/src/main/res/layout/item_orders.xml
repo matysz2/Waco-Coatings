@@ -37,7 +37,7 @@
             android:gravity="end"/>
     </LinearLayout>
 
-    <!-- Wiersz 2: Kwota + Data -->
+    <!-- Wiersz 2: Kwota netto + brutto -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,17 +57,37 @@
             android:textColor="#008000" />
 
         <TextView
-            android:id="@+id/textViewOrderCreatedAt"
+            android:id="@+id/textViewOrderGrossPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="Brutto: 123.00 zł"
+            android:textSize="14sp"
+            android:textColor="#228B22"
+            android:gravity="end" />
+    </LinearLayout>
+
+    <!-- Wiersz 3: Data utworzenia -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#DDDDDD"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/textViewOrderCreatedAt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="Utworzono: 2024-12-31 10:30"
             android:textSize="14sp"
             android:textColor="#555555"
-            android:gravity="end"/>
+            android:gravity="start"/>
     </LinearLayout>
 
-    <!-- Wiersz 3: Przycisk szczegółów -->
+    <!-- Wiersz 4: Przycisk szczegółów -->
     <Button
         android:id="@+id/buttonOrderDetails"
         android:layout_width="match_parent"
@@ -75,6 +95,4 @@
         android:text="Szczegóły zamówienia"
         android:backgroundTint="@android:color/holo_blue_light"
         android:textColor="#FFFFFF"/>
-
-
 </LinearLayout>

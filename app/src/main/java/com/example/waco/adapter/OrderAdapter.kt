@@ -20,6 +20,7 @@ class OrderAdapter(
         val textViewOrderId: TextView = itemView.findViewById(R.id.textViewOrderId)
         val textViewOrderStatus: TextView = itemView.findViewById(R.id.textViewOrderStatus)
         val textViewOrderPrice: TextView = itemView.findViewById(R.id.textViewOrderPrice)
+        val textViewOrderGrossPrice: TextView = itemView.findViewById(R.id.textViewOrderGrossPrice)
         val textViewOrderCreatedAt: TextView = itemView.findViewById(R.id.textViewOrderCreatedAt)
         val buttonDetails: Button = itemView.findViewById(R.id.buttonOrderDetails)
     }
@@ -34,9 +35,12 @@ class OrderAdapter(
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orderList[position]
+        val grossPrice = order.price * 1.23
+
         holder.textViewOrderId.text = "Numer: ${order.orderId}"
         holder.textViewOrderStatus.text = "Status: ${order.status}"
-        holder.textViewOrderPrice.text = "Kwota: ${order.price} zł"
+        holder.textViewOrderPrice.text = "Netto: %.2f zł".format(order.price)
+        holder.textViewOrderGrossPrice.text = "Brutto: %.2f zł".format(grossPrice)
         holder.textViewOrderCreatedAt.text = "Utworzono: ${order.createdAt}"
 
         holder.buttonDetails.setOnClickListener {

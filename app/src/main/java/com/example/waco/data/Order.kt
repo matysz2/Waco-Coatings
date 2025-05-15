@@ -8,5 +8,6 @@ data class Order(
     val comment: String,
     val price: Double,
     val createdAt: String,
-    val items: List<OrderItem>
+    val items: List<OrderItem>,
+    val totalPrice: Double  // <--- dodaj to pole, jeśli go nie ma
 )

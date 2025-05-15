@@ -107,6 +107,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Kwota: " />
+                <TextView
+                    android:id="@+id/invoiceGrossTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brutto: "
+                    android:textColor="#FF0000" />
+
 
                 <TextView
                     android:id="@+id/invoiceDateTextView"
@@ -170,6 +177,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cena: " />
+                <TextView
+                    android:id="@+id/orderGrossTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brutto: "
+                    android:textColor="#FF0000" />
+
 
                 <TextView
                     android:id="@+id/orderDateTextView"

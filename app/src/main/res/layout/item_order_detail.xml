@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:background="#FFFFFF">
 
+    <!-- Nazwa produktu -->
     <TextView
         android:id="@+id/textProductName"
         android:text="Produkt"
@@ -15,6 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <!-- Ilość -->
     <TextView
         android:id="@+id/textQuantity"
         android:text="Ilość"
@@ -22,13 +24,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <!-- Cena netto -->
     <TextView
         android:id="@+id/textPrice"
-        android:text="Cena"
+        android:text="Cena netto"
         android:textColor="#444444"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <!-- Cena brutto -->
+    <TextView
+        android:id="@+id/textGrossPrice"
+        android:text="Cena brutto"
+        android:textColor="#1B5E20"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Cena razem -->
     <TextView
         android:id="@+id/textTotalPrice"
         android:text="Razem"

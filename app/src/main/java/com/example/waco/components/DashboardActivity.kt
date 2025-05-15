@@ -25,17 +25,23 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var invoiceNumberTextView: TextView
     private lateinit var invoiceAmountTextView: TextView
     private lateinit var invoiceDateTextView: TextView
+    private lateinit var invoiceGrossTextView: TextView
     private lateinit var downloadInvoiceButton: Button
+
     private lateinit var orderNumberTextView: TextView
     private lateinit var orderAmountTextView: TextView
     private lateinit var orderPriceTextView: TextView
+    private lateinit var orderGrossTextView: TextView
     private lateinit var orderDateTextView: TextView
+
     private lateinit var accountNameTextView: TextView
     private lateinit var accountEmailTextView: TextView
     private lateinit var bottomNav: BottomNavigationView
@@ -62,16 +68,18 @@ class DashboardActivity : AppCompatActivity() {
         invoiceNumberTextView = findViewById(R.id.invoiceNumberTextView)
         invoiceAmountTextView = findViewById(R.id.invoiceAmountTextView)
         invoiceDateTextView = findViewById(R.id.invoiceDateTextView)
+        invoiceGrossTextView = findViewById(R.id.invoiceGrossTextView)
         downloadInvoiceButton = findViewById(R.id.downloadInvoiceButton)
 
         orderNumberTextView = findViewById(R.id.orderNumberTextView)
         orderAmountTextView = findViewById(R.id.orderAmountTextView)
         orderPriceTextView = findViewById(R.id.orderPriceTextView)
+        orderGrossTextView = findViewById(R.id.orderGrossTextView)
         orderDateTextView = findViewById(R.id.orderDateTextView)
 
         val lastInvoiceCard = findViewById<CardView>(R.id.lastInvoiceCard)
         val lastOrderCard = findViewById<CardView>(R.id.lastOrderCard)
-        val accountInfoCard = findViewById<CardView>(R.id.accountInfoCard)
+        val accountInfoCard: View = findViewById(R.id.accountInfoCard)
 
         accountNameTextView = findViewById(R.id.accountNameTextView)
         accountEmailTextView = findViewById(R.id.accountEmailTextView)
@@ -84,13 +92,11 @@ class DashboardActivity : AppCompatActivity() {
         passwordEditText = findViewById(R.id.editTextPassword)
         saveButton = findViewById(R.id.saveAccountButton)
 
-        // Ukryj na starcie
         nameEditText.visibility = View.GONE
         emailEditText.visibility = View.GONE
         passwordEditText.visibility = View.GONE
         saveButton.visibility = View.GONE
 
-        // ←←← TUTAJ DOKLEJ Twój kod:
         saveButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
             val email = emailEditText.text.toString().trim()
@@ -103,9 +109,7 @@ class DashboardActivity : AppCompatActivity() {
             }
 
             val request = AccountUpdateRequest(userId, name, email, password)
-            val call = apiService.updateAccountData(request)
-
-            call.enqueue(object : Callback<ResponseBody> {
+            apiService.updateAccountData(request).enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.isSuccessful) {
                         Toast.makeText(this@DashboardActivity, "Dane zapisane", Toast.LENGTH_SHORT).show()
@@ -130,14 +134,12 @@ class DashboardActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_invoices -> {
-                    val intent = Intent(this, InvoicesActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, InvoicesActivity::class.java))
                     finish()
                     true
                 }
                 R.id.navigation_orders -> {
-                    val intent = Intent(this, OrdersActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, OrdersActivity::class.java))
                     finish()
                     true
                 }
@@ -146,25 +148,23 @@ class DashboardActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_account -> {
-
-                    // Pokaż pola edycji i wczytaj dane
                     nameEditText.visibility = View.VISIBLE
                     emailEditText.visibility = View.VISIBLE
                     passwordEditText.visibility = View.VISIBLE
                     saveButton.visibility = View.VISIBLE
 
-
-                    // Ukryj dane o fakturze
                     invoiceNumberTextView.visibility = View.GONE
                     invoiceAmountTextView.visibility = View.GONE
                     invoiceDateTextView.visibility = View.GONE
+                    invoiceGrossTextView.visibility = View.GONE
                     downloadInvoiceButton.visibility = View.GONE
 
-                    // Ukryj dane o zamówieniu
                     orderNumberTextView.visibility = View.GONE
                     orderAmountTextView.visibility = View.GONE
                     orderPriceTextView.visibility = View.GONE
+                    orderGrossTextView.visibility = View.GONE
                     orderDateTextView.visibility = View.GONE
+
                     lastInvoiceCard.visibility = View.GONE
                     lastOrderCard.visibility = View.GONE
                     accountInfoCard.visibility = View.GONE
@@ -172,88 +172,28 @@ class DashboardActivity : AppCompatActivity() {
                     val sharedPref = getSharedPreferences("admin_data", MODE_PRIVATE)
                     nameEditText.setText(sharedPref.getString("name", ""))
                     emailEditText.setText(sharedPref.getString("email", ""))
-                    passwordEditText.setText(sharedPref.getString("password", "")) // tylko jeśli trzymasz hasło lokalnie
+                    passwordEditText.setText(sharedPref.getString("password", ""))
 
                     true
                 }
-
                 else -> false
             }
         }
 
         downloadInvoiceButton.setOnClickListener {
             invoiceDownloadUrl?.let { url ->
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = android.net.Uri.parse(url)
-                startActivity(intent)
-            } ?: run {
-                Toast.makeText(this, "Brak pliku do pobrania", Toast.LENGTH_SHORT).show()
-            }
+                startActivity(Intent(Intent.ACTION_VIEW).apply {
+                    data = android.net.Uri.parse(url)
+                })
+            } ?: Toast.makeText(this, "Brak pliku do pobrania", Toast.LENGTH_SHORT).show()
         }
 
         loadDashboardData()
         loadAccountInfo()
     }
-    override fun onBackPressed() {
-        super.onBackPressed()
-        // Intencjonalnie NIE wywołujemy super.onBackPressed(),
-        // bo ręcznie przechodzimy do DashboardActivity
-        goToDashboard()
-    }
-
-
-    private fun goToDashboard() {
-        val intent = Intent(this, DashboardActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-    override fun onSupportNavigateUp(): Boolean {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
-        return true
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_logout, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.logout -> {
-                showLogoutDialog()
-                true
-            }
-            android.R.id.home -> {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun showLogoutDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Wylogowanie")
-            .setMessage("Czy na pewno chcesz się wylogować?")
-            .setPositiveButton("Tak") { _, _ ->
-                val sharedPref = getSharedPreferences("admin_data", Context.MODE_PRIVATE)
-                sharedPref.edit().clear().apply()
-                val intent = Intent(this,MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
-            }
-            .setNegativeButton("Anuluj", null)
-            .show()
-    }
 
     private fun loadDashboardData() {
-        val sharedPref = getSharedPreferences("admin_data", MODE_PRIVATE)
-        val userId = sharedPref.getString("user_id", null)
+        val userId = getSharedPreferences("admin_data", MODE_PRIVATE).getString("user_id", null)
 
         if (userId == null) {
             Log.e("API Debug", "Brak user_id w SharedPreferences")
@@ -268,25 +208,33 @@ class DashboardActivity : AppCompatActivity() {
                     val json = JSONObject(body)
 
                     val invoice = json.optJSONObject("invoice")
-                    val invoiceNumber = invoice?.optString("invoice_number", "-")
-                    val invoiceAmount = invoice?.optString("amount", "-")
-                    val invoiceDate = invoice?.optString("date", "-")
+                    val invoiceAmount = invoice?.optString("amount", "0") ?: "0"
+                    val invoiceGross = (invoiceAmount.toDoubleOrNull() ?: 0.0) * 1.23
+
+                    invoiceNumberTextView.text = "Numer faktury: ${invoice?.optString("invoice_number", "-")}"
+                    invoiceAmountTextView.text = "Kwota netto: $invoiceAmount zł"
+                    invoiceGrossTextView.text = "Kwota z VAT: %.2f zł".format(invoiceGross)
+
+                    // Pobranie i formatowanie daty faktury
+                    val invoiceDateRaw = invoice?.optString("created_at") ?: "-"
+                    val invoiceDateFormatted = invoiceDateRaw.replace("\"", "-")
+                    invoiceDateTextView.text = "Data: $invoiceDateFormatted"
+
                     invoiceDownloadUrl = invoice?.optString("file", null)
 
-                    invoiceNumberTextView.text = "Numer faktury: $invoiceNumber"
-                    invoiceAmountTextView.text = "Kwota: $invoiceAmount zł"
-                    invoiceDateTextView.text = "Data: $invoiceDate"
-
                     val order = json.optJSONObject("order")
-                    val orderId = order?.optString("id", "-")
-                    val orderStatus = order?.optString("status", "-")
-                    val orderPrice = order?.optString("price", "-")
-                    val orderDate = order?.optString("created_at", "-")
+                    val orderPrice = order?.optString("price", "0") ?: "0"
+                    val orderGross = (orderPrice.toDoubleOrNull() ?: 0.0) * 1.23
 
-                    orderNumberTextView.text = "Numer zamówienia: $orderId"
-                    orderAmountTextView.text = "Status: $orderStatus"
-                    orderPriceTextView.text = "Cena: $orderPrice zł"
-                    orderDateTextView.text = "Data: $orderDate"
+                    orderNumberTextView.text = "Numer zamówienia: ${order?.optString("id", "-")}"
+                    orderAmountTextView.text = "Status: ${order?.optString("status", "-")}"
+                    orderPriceTextView.text = "Kwota netto: $orderPrice zł"
+                    orderGrossTextView.text = "Kwota z VAT: %.2f zł".format(orderGross)
+
+                    // Pobranie i formatowanie daty zamówienia
+                    val orderDateRaw = order?.optString("created_at") ?: "-"
+                    val orderDateFormatted = orderDateRaw.replace("\"", "-")
+                    orderDateTextView.text = "Data: $orderDateFormatted"
                 } else {
                     Log.e("API Debug", "Błąd odpowiedzi: ${response.code()}")
                 }
@@ -304,4 +252,73 @@ class DashboardActivity : AppCompatActivity() {
         accountEmailTextView.text = "Email: ${sharedPref.getString("email", "-")}"
     }
 
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            // Zamknij menu cennika, jeśli otwarte
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else if (isAccountEditVisible()) {
+            // Jeśli jesteśmy na ekranie edycji konta (pola widoczne), wróć do Dashboard (lub MainActivity)
+            goToDashboardActivity()
+        } else {
+            // Standardowe zachowanie – cofnięcie lub zamknięcie activity
+            super.onBackPressed()
+        }
+    }
+
+    // Funkcja pomocnicza sprawdzająca, czy widoki edycji konta są widoczne
+    private fun isAccountEditVisible(): Boolean {
+        return nameEditText.visibility == View.VISIBLE &&
+                emailEditText.visibility == View.VISIBLE &&
+                passwordEditText.visibility == View.VISIBLE &&
+                saveButton.visibility == View.VISIBLE
+    }
+
+
+    override fun onSupportNavigateUp(): Boolean {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+        return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_logout, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.logout -> {
+                showLogoutDialog()
+                true
+            }
+            android.R.id.home -> {
+                // Po kliknięciu strzałki cofamy się do MainActivity
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun goToDashboardActivity() {
+        startActivity(Intent(this, DashboardActivity::class.java))
+        finish()
+    }
+
+    private fun showLogoutDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Wylogowanie")
+            .setMessage("Czy na pewno chcesz się wylogować?")
+            .setPositiveButton("Tak") { _, _ ->
+                val sharedPref = getSharedPreferences("admin_data", Context.MODE_PRIVATE)
+                sharedPref.edit().clear().apply()
+                startActivity(Intent(this, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                })
+                finish()
+            }
+            .setNegativeButton("Anuluj", null)
+            .show()
+    }
 }
