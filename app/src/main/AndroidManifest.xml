@@ -113,7 +113,7 @@
         <activity android:name="com.example.waco.components.OrderItemActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name="com.example.waco.components.OrdersDetailsActivity"
+        <activity android:name="com.example.waco.components.PriceListActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service

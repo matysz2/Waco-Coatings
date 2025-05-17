@@ -82,6 +82,7 @@ dependencies {
     // Networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.google.guava:guava:31.1-android")
 
     // Other
     implementation(libs.identity.credential)
@@ -107,6 +108,7 @@ dependencies {
     // Volley
     implementation(libs.volley)
     implementation(libs.litert.metadata)
+    implementation(libs.firebase.firestore.ktx)
 
     // Tests
     testImplementation(libs.junit)

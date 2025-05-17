@@ -8,6 +8,7 @@ import com.example.waco.data.OrderItem
 import com.example.waco.data.OrderRequest
 import com.example.waco.data.OrderStatusResponse
 import com.example.waco.data.OrdersItem
+import com.example.waco.data.PriceItem
 import com.example.waco.data.Product
 import com.example.waco.data.Product2
 import com.example.waco.model.AccountUpdateRequest
@@ -121,6 +122,13 @@ interface ApiService {
 
     @GET("get_orders_details.php")
     fun getOrdersDetails(@Query("order_id") orderId: String): Call<List<OrdersItem>>
+
+
+    @GET("get_prices.php")
+    suspend fun getPrices(
+        @Query("group") group: String,
+        @Query("price") priceColumn: String
+    ): List<PriceItem>
 
 }
 

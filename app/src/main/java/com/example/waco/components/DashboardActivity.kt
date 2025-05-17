@@ -20,6 +20,7 @@ import com.example.waco.model.AccountUpdateRequest
 import com.example.waco.network.ApiClient
 import com.example.waco.network.ApiService
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
@@ -96,6 +97,28 @@ class DashboardActivity : AppCompatActivity() {
         emailEditText.visibility = View.GONE
         passwordEditText.visibility = View.GONE
         saveButton.visibility = View.GONE
+
+
+        val navView = findViewById<NavigationView>(R.id.nav_view)
+
+        navView.setNavigationItemSelectedListener { menuItem ->
+            val groupName = menuItem.title.toString() // np. "Kolory RAL Classic K7", "Podkłady"
+
+            val sharedPref = getSharedPreferences("admin_data", Context.MODE_PRIVATE)
+            val priceType = sharedPref.getString("price", "hurtowa1") ?: "hurtowa1"
+
+            val intent = Intent(this, PriceListActivity::class.java).apply {
+                putExtra("group", groupName)
+                putExtra("priceType", priceType)
+            }
+
+            startActivity(intent)
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
+
+
+
 
         saveButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
