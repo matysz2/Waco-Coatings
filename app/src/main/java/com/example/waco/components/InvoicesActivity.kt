@@ -1,9 +1,12 @@
 package com.example.waco.components
+import android.content.pm.PackageManager
 
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.MainActivity
@@ -22,6 +26,9 @@ import com.example.waco.network.ApiService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.Manifest
+
+import androidx.core.app.ActivityCompat
 
 class InvoicesActivity : AppCompatActivity() {
 
@@ -41,14 +48,62 @@ class InvoicesActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerViewInvoices)
         recyclerView.layoutManager = LinearLayoutManager(this)
+
         invoiceAdapter = InvoiceAdapter(invoiceList) { invoice ->
-            invoice.link?.let { url ->
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                startActivity(intent)
+            invoice.link?.let { rawPath ->
+
+                // Sprawdź, czy rawPath to pełny URL czy ścieżka
+                val fullUrl = if (rawPath.startsWith("http://") || rawPath.startsWith("http://")) {
+                    rawPath
+                } else {
+                    // Jeśli to ścieżka względna - dołóż https i usuń zbędne ukośniki z przodu
+                    val cleanPath = rawPath.trimStart('/', '\\')
+                    "http://$cleanPath"
+                }
+
+                Log.d("DownloadTest", "Pobierany URL: $fullUrl")
+
+                val fileName = "faktura_${invoice.invoice_number ?: System.currentTimeMillis()}.pdf"
+
+                // Sprawdzenie uprawnień do zapisu plików (w starszych Androidach)
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(this,
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 100)
+
+                    Toast.makeText(this, "Brak uprawnień do zapisu plików, proszę zezwolić", Toast.LENGTH_SHORT).show()
+                    return@let
+                }
+
+                try {
+                    val request = DownloadManager.Request(Uri.parse(fullUrl)).apply {
+                        setTitle("Pobieranie faktury")
+                        setDescription("Trwa pobieranie pliku faktury")
+                        setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        setAllowedOverMetered(true)
+                        setAllowedOverRoaming(true)
+                        setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                    }
+
+                    val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    val id = downloadManager.enqueue(request)
+                    Log.d("DownloadTest", "DownloadManager enqueued with id: $id")
+
+                    Toast.makeText(this, "Rozpoczęto pobieranie faktury", Toast.LENGTH_SHORT).show()
+
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Błąd podczas pobierania: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("DownloadError", "Błąd pobierania: ", e)
+                }
+
             } ?: run {
-                Toast.makeText(this, "Brak pliku do pobrania", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Brak linku do faktury", Toast.LENGTH_SHORT).show()
             }
         }
+
+
+
         recyclerView.adapter = invoiceAdapter
 
         apiService = ApiClient.getClient().create(ApiService::class.java)
@@ -65,6 +120,25 @@ class InvoicesActivity : AppCompatActivity() {
         // Intencjonalnie NIE wywołujemy super.onBackPressed(),
         // bo ręcznie przechodzimy do DashboardActivity
         goToDashboard()
+    }
+    private fun downloadFile(context: Context, url: String, title: String, fileName: String) {
+        try {
+            val request = DownloadManager.Request(Uri.parse(url))
+                .setTitle(title)
+                .setDescription("Pobieranie pliku faktury...")
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                .setAllowedOverMetered(true)
+                .setAllowedOverRoaming(true)
+
+            val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            downloadManager.enqueue(request)
+
+            Toast.makeText(context, "Pobieranie rozpoczęte...", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Błąd pobierania: ${e.message}", Toast.LENGTH_LONG).show()
+            Log.e("Download", "Błąd: ${e.message}")
+        }
     }
 
 

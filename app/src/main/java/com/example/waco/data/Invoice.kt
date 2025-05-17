@@ -7,5 +7,6 @@ data class Invoice(
     val date: String,
     val amount: String,
     val status: String,
+    val gross_value: Double,
     val link: String?
 )

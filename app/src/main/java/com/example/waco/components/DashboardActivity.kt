@@ -1,8 +1,12 @@
 package com.example.waco.components
 
+import android.app.DownloadManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -12,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.waco.MainActivity
@@ -118,6 +123,33 @@ class DashboardActivity : AppCompatActivity() {
         }
 
 
+        downloadInvoiceButton.setOnClickListener {
+            invoiceDownloadUrl?.let { url ->
+                try {
+                    val request = DownloadManager.Request(Uri.parse(url)).apply {
+                        setTitle("Pobieranie faktury")
+                        setDescription("Trwa pobieranie pliku faktury")
+                        setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "faktura_${System.currentTimeMillis()}.pdf")
+                        setAllowedOverMetered(true)
+                        setAllowedOverRoaming(true)
+                    }
+
+                    val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    downloadManager.enqueue(request)
+
+                    Toast.makeText(this@DashboardActivity, "Rozpoczęto pobieranie faktury", Toast.LENGTH_SHORT).show()
+
+                } catch (e: Exception) {
+                    Toast.makeText(this@DashboardActivity, "Błąd podczas pobierania: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("DownloadError", "Błąd pobierania: ", e)
+                }
+            } ?: run {
+                Toast.makeText(this@DashboardActivity, "Brak linku do faktury", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
 
 
         saveButton.setOnClickListener {
@@ -214,6 +246,16 @@ class DashboardActivity : AppCompatActivity() {
         loadDashboardData()
         loadAccountInfo()
     }
+    private fun formatDate(dateString: String): String {
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+            val date = inputFormat.parse(dateString)
+            outputFormat.format(date!!)
+        } catch (e: Exception) {
+            "-"
+        }
+    }
 
     private fun loadDashboardData() {
         val userId = getSharedPreferences("admin_data", MODE_PRIVATE).getString("user_id", null)
@@ -227,46 +269,66 @@ class DashboardActivity : AppCompatActivity() {
         apiService.getDashboardData(userId).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
-                    val body = response.body()?.string()
-                    val json = JSONObject(body)
+                    try {
+                        val body = response.body()?.string()
+                        if (body != null) {
+                            val json = JSONObject(body)
 
-                    val invoice = json.optJSONObject("invoice")
-                    val invoiceAmount = invoice?.optString("amount", "0") ?: "0"
-                    val invoiceGross = (invoiceAmount.toDoubleOrNull() ?: 0.0) * 1.23
+                            // --- Faktura ---
+                            val invoice = json.optJSONObject("invoice")
+                            val invoiceAmount = invoice?.optString("amount", "0") ?: "0"
+                            val invoiceGross = invoice?.optString("gross_value", "0") ?: "0"
+                            val invoiceNumber = invoice?.optString("invoice_number", "-") ?: "-"
+                            val invoiceDate = invoice?.optString("date", "-") ?: "-"
+                            val rawLink = invoice?.optString("link", null)
 
-                    invoiceNumberTextView.text = "Numer faktury: ${invoice?.optString("invoice_number", "-")}"
-                    invoiceAmountTextView.text = "Kwota netto: $invoiceAmount zł"
-                    invoiceGrossTextView.text = "Kwota z VAT: %.2f zł".format(invoiceGross)
+                            // Popraw link (escape'y + brak protokołu)
+                            invoiceDownloadUrl = rawLink
+                                ?.replace("\\/", "/")
+                                ?.let { link ->
+                                    if (!link.startsWith("http")) "https:$link" else link
+                                }
 
-                    // Pobranie i formatowanie daty faktury
-                    val invoiceDateRaw = invoice?.optString("created_at") ?: "-"
-                    val invoiceDateFormatted = invoiceDateRaw.replace("\"", "-")
-                    invoiceDateTextView.text = "Data: $invoiceDateFormatted"
+                            Log.d("InvoiceLink", "Link do faktury: $invoiceDownloadUrl")
 
-                    invoiceDownloadUrl = invoice?.optString("file", null)
+                            // Ustawianie danych w widoku
+                            invoiceNumberTextView.text = "Numer faktury: $invoiceNumber"
+                            invoiceAmountTextView.text = "Kwota netto: $invoiceAmount zł"
+                            invoiceGrossTextView.text = "Kwota z VAT: $invoiceGross zł"
+                            invoiceDateTextView.text = "Data: $invoiceDate"
 
-                    val order = json.optJSONObject("order")
-                    val orderPrice = order?.optString("price", "0") ?: "0"
-                    val orderGross = (orderPrice.toDoubleOrNull() ?: 0.0) * 1.23
+                            // --- Zamówienie ---
+                            val order = json.optJSONObject("order")
+                            val orderPriceStr = order?.optString("price", "0") ?: "0"
+                            val orderPrice = orderPriceStr.toDoubleOrNull() ?: 0.0
+                            val orderGross = orderPrice * 1.23
+                            val orderId = order?.optString("id", "-") ?: "-"
+                            val orderStatus = order?.optString("status", "-") ?: "-"
+                            val orderDate = order?.optString("created_at", "-") ?: "-"
 
-                    orderNumberTextView.text = "Numer zamówienia: ${order?.optString("id", "-")}"
-                    orderAmountTextView.text = "Status: ${order?.optString("status", "-")}"
-                    orderPriceTextView.text = "Kwota netto: $orderPrice zł"
-                    orderGrossTextView.text = "Kwota z VAT: %.2f zł".format(orderGross)
-
-                    // Pobranie i formatowanie daty zamówienia
-                    val orderDateRaw = order?.optString("created_at") ?: "-"
-                    val orderDateFormatted = orderDateRaw.replace("\"", "-")
-                    orderDateTextView.text = "Data: $orderDateFormatted"
+                            orderNumberTextView.text = "Numer zamówienia: $orderId"
+                            orderAmountTextView.text = "Status: $orderStatus"
+                            orderPriceTextView.text = "Kwota netto: $orderPriceStr zł"
+                            orderGrossTextView.text = "Kwota z VAT: %.2f zł".format(orderGross)
+                            orderDateTextView.text = "Data: $orderDate"
+                        } else {
+                            Log.e("API Debug", "Puste body odpowiedzi")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("API Debug", "Błąd parsowania JSON: ${e.message}", e)
+                    }
                 } else {
-                    Log.e("API Debug", "Błąd odpowiedzi: ${response.code()}")
+                    Log.e("API Debug", "Nieudana odpowiedź: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("API Debug", "Błąd połączenia: ${t.message}")
+                Log.e("API Debug", "Błąd połączenia: ${t.message}", t)
             }
         })
+
+
+
     }
 
     private fun loadAccountInfo() {

@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-
+        <!-- Wiersz 1: Numer i Data -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,50 +22,61 @@
 
             <TextView
                 android:id="@+id/invoiceNumberTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Numer: "
-            android:textStyle="bold" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Numer: "
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/invoiceDateTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Data: " />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Data: " />
         </LinearLayout>
 
-
+        <!-- Wiersz 2: Kwota netto i status -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="2"
+            android:layout_marginTop="4dp">
 
             <TextView
                 android:id="@+id/invoiceAmountTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Kwota: " />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Kwota netto: " />
 
             <TextView
                 android:id="@+id/invoiceStatusTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Status: " />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Status: " />
         </LinearLayout>
 
+        <!-- 🔴 Kwota brutto na czerwono -->
+        <TextView
+            android:id="@+id/invoiceGrossValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kwota brutto: "
+            android:textColor="#D32F2F"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp" />
 
+        <!-- Przycisk -->
         <Button
             android:id="@+id/downloadInvoiceButton"
-        style="@style/DownloadButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pobierz"
-        android:layout_marginTop="16dp" />
+            style="@style/DownloadButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pobierz"
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

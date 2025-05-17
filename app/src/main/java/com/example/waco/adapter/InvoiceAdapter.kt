@@ -23,6 +23,8 @@ class InvoiceAdapter(
         val invoiceAmountTextView: TextView = itemView.findViewById(R.id.invoiceAmountTextView)
         val invoiceStatusTextView: TextView = itemView.findViewById(R.id.invoiceStatusTextView)
         val downloadButton: Button = itemView.findViewById(R.id.downloadInvoiceButton)
+        val invoiceGrossValueTextView: TextView = itemView.findViewById(R.id.invoiceGrossValueTextView)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvoiceViewHolder {
@@ -35,22 +37,14 @@ class InvoiceAdapter(
         val invoice = invoices[position]
         holder.invoiceNumberTextView.text = "Numer faktury: ${invoice.invoice_number}"
         holder.invoiceDateTextView.text = "Data: ${invoice.date}"
-        holder.invoiceAmountTextView.text = "Kwota: ${invoice.amount} zł"
+        holder.invoiceAmountTextView.text = "Kwota netto: ${invoice.amount} zł"
+        holder.invoiceGrossValueTextView.text = "Kwota brutto: ${invoice.gross_value} zł"
         holder.invoiceStatusTextView.text = "Status: ${invoice.status}"
         holder.downloadButton.setOnClickListener {
-            val context = holder.itemView.context
-            val url = invoice.link
-            if (!url.isNullOrBlank()) {
-                try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(intent)
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Nie można otworzyć faktury.", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(context, "Brak linku do faktury.", Toast.LENGTH_SHORT).show()
-            }
+            onDownloadClick(invoice)
         }
+
+
     }
 
     override fun getItemCount(): Int = invoices.size
