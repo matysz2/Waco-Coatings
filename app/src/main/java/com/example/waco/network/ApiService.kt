@@ -11,6 +11,7 @@ import com.example.waco.data.OrdersItem
 import com.example.waco.data.PriceItem
 import com.example.waco.data.Product
 import com.example.waco.data.Product2
+import com.example.waco.data.ProductDetailResponse
 import com.example.waco.model.AccountUpdateRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -129,6 +130,21 @@ interface ApiService {
         @Query("group") group: String,
         @Query("price") priceColumn: String
     ): List<PriceItem>
+
+
+
+    @GET("get_product_details.php")
+    fun getProductDetails(@Query("code") code: String): Call<ProductDetailResponse>
+
+
+    @FormUrlEncoded
+    @POST("add_comment.php")
+    fun postComment(
+        @Field("product_id") productId: String,
+        @Field("comment") comment: String,
+        @Field("rating") rating: Int,
+        @Field("username") username: String
+    ): Call<Void>
 
 }
 

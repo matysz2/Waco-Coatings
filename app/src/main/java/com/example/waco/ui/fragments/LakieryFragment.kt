@@ -1,5 +1,6 @@
 package com.example.waco.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
 import com.example.waco.adapter.ProductAdapter
+import com.example.waco.components.ProductDetailActivity
 import com.example.waco.data.Product2
 import com.example.waco.network.ApiService
 import com.example.waco.network.Constants
@@ -55,14 +57,17 @@ class LakieryFragment : Fragment() {
             override fun onResponse(call: Call<List<Product2>>, response: Response<List<Product2>>) {
                 if (response.isSuccessful) {
                     val products = response.body()
-                    if (products != null) {
-                        // Ustawienie adaptera dla RecyclerView
-                        productAdapter = ProductAdapter(products)
+                    if (!products.isNullOrEmpty()) {
+                        productAdapter = ProductAdapter(products) { product ->
+                            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+                            intent.putExtra("PRODUCT_CODE", product.kod)
+                            startActivity(intent)
+                        }
                         recyclerView.adapter = productAdapter
                     }
                 } else {
                     Toast.makeText(
-                        activity,
+                        requireContext(),
                         "Błąd pobierania danych: ${response.code()}",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -70,9 +75,10 @@ class LakieryFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<Product2>>, t: Throwable) {
-                Toast.makeText(activity, "Błąd połączenia: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Błąd połączenia: ${t.message}", Toast.LENGTH_SHORT).show()
                 Log.e("LakieryFragment", "Błąd połączenia: ${t.message}")
             }
         })
     }
+
 }

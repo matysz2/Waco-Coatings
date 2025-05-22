@@ -6,11 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
-import com.example.waco.data.Product
 import com.example.waco.data.Product2
 
-class ProductAdapter(private var productList: List<Product2>) :
-    RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(
+    private var productList: List<Product2>,
+    private val onItemClick: (Product2) -> Unit = {} // ← domyślny pusty callback
+) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -22,11 +23,13 @@ class ProductAdapter(private var productList: List<Product2>) :
         val product = productList[position]
         holder.codeTextView.text = product.kod
         holder.descriptionTextView.text = product.nazwa
+
+        holder.itemView.setOnClickListener {
+            onItemClick(product)
+        }
     }
 
-    override fun getItemCount(): Int {
-        return productList.size
-    }
+    override fun getItemCount(): Int = productList.size
 
     fun updateData(newList: List<Product2>) {
         productList = newList
@@ -37,6 +40,4 @@ class ProductAdapter(private var productList: List<Product2>) :
         val codeTextView: TextView = view.findViewById(R.id.productCode)
         val descriptionTextView: TextView = view.findViewById(R.id.productDescription)
     }
-
-
 }

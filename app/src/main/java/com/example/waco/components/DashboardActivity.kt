@@ -338,18 +338,13 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            // Zamknij menu cennika, jeśli otwarte
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else if (isAccountEditVisible()) {
-            // Jeśli jesteśmy na ekranie edycji konta (pola widoczne), wróć do Dashboard (lub MainActivity)
-            goToDashboardActivity()
-        } else {
-            // Standardowe zachowanie – cofnięcie lub zamknięcie activity
-            super.onBackPressed()
-        }
+        AlertDialog.Builder(this)
+            .setMessage("Czy na pewno chcesz wyjść z aplikacji?")
+            .setCancelable(false)
+            .setPositiveButton("Tak") { _, _ -> super.onBackPressed() }
+            .setNegativeButton("Nie") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
-
     // Funkcja pomocnicza sprawdzająca, czy widoki edycji konta są widoczne
     private fun isAccountEditVisible(): Boolean {
         return nameEditText.visibility == View.VISIBLE &&

@@ -1,5 +1,6 @@
 package com.example.waco.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.waco.R
 import com.example.waco.adapter.ProductAdapter
-import com.example.waco.data.Product
+import com.example.waco.components.ProductDetailActivity
 import com.example.waco.data.Product2
 import com.example.waco.network.ApiService
 import com.example.waco.network.Constants
@@ -24,7 +25,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 class PodkladyFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var productAdapter: ProductAdapter
     private lateinit var apiService: ApiService
 
     override fun onCreateView(
@@ -33,37 +33,39 @@ class PodkladyFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.podklady_fragment, container, false)
 
-        // Inicjalizacja RecyclerView
         recyclerView = rootView.findViewById(R.id.recyclerPodklady)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Inicjalizacja Retrofit i ApiService
         val retrofit = Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)  // Upewnij się, że masz poprawny BASE_URL
+            .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         apiService = retrofit.create(ApiService::class.java)
 
-        // Pobranie danych
-        fetchPodkłady()
+        fetchPodklady()
 
         return rootView
     }
 
-    private fun fetchPodkłady() {
+    private fun fetchPodklady() {
         apiService.getPodklady().enqueue(object : Callback<List<Product2>> {
             override fun onResponse(call: Call<List<Product2>>, response: Response<List<Product2>>) {
                 if (response.isSuccessful) {
                     val products = response.body()
-                    if (products != null) {
-                        // Ustawienie adaptera dla RecyclerView
-                        productAdapter = ProductAdapter(products)
-                        recyclerView.adapter = productAdapter
+                    if (!products.isNullOrEmpty()) {
+
+                        val adapter = ProductAdapter(products) { product ->
+                            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+                            intent.putExtra("PRODUCT_CODE", product.kod)
+                            startActivity(intent)
+                        }
+
+                        recyclerView.adapter = adapter
                     }
                 } else {
                     Toast.makeText(
-                        activity,
+                        requireContext(),
                         "Błąd pobierania danych: ${response.code()}",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -71,7 +73,7 @@ class PodkladyFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<Product2>>, t: Throwable) {
-                Toast.makeText(activity, "Błąd połączenia: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Błąd połączenia: ${t.message}", Toast.LENGTH_SHORT).show()
                 Log.e("PodkladyFragment", "Błąd połączenia: ${t.message}")
             }
         })
