@@ -146,6 +146,14 @@ interface ApiService {
         @Field("username") username: String
     ): Call<Void>
 
+
+    @FormUrlEncoded
+    @POST("update_token.php")
+    fun updateFcmTokenAdmin(
+        @Field("user_id") userId: Int,
+        @Field("token") token: String
+    ): Call<Void>
+
 }
 
 

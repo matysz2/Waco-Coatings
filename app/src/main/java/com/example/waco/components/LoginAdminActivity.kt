@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.waco.MainActivity
@@ -75,20 +74,11 @@ class LoginAdminActivity : AppCompatActivity() {
             return
         }
 
-        Log.d("LoginAdmin", "🟢 Rozpoczynanie logowania... email=$email, password=$password")
-
         apiService.loginUser(email, password).enqueue(object : Callback<okhttp3.ResponseBody> {
-            override fun onResponse(
-                call: Call<okhttp3.ResponseBody>,
-                response: Response<okhttp3.ResponseBody>
-            ) {
-                Log.d("LoginAdmin", "🟢 Odpowiedź HTTP: ${response.code()}")
-
+            override fun onResponse(call: Call<okhttp3.ResponseBody>, response: Response<okhttp3.ResponseBody>) {
                 if (response.isSuccessful && response.body() != null) {
                     try {
                         val jsonString = response.body()!!.string()
-                        Log.d("LoginAdmin", "🟢 Odpowiedź JSON: $jsonString")
-
                         val json = JSONObject(jsonString)
                         val status = json.optString("status")
 
@@ -96,14 +86,12 @@ class LoginAdminActivity : AppCompatActivity() {
                             val userId = json.optString("user_id")
                             val userEmail = json.optString("email")
                             val prices = json.optString("prices")
-                            val userName = json.optString("name") // nowy element
+                            val userName = json.optString("name")
 
-                            Log.d("LoginAdmin", "🟢 Użytkownik OK: ID=$userId, Email=$userEmail, Name=$userName")
-
+                            // 🔥 Pobierz token Firebase i wyślij do serwera
                             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     val token = task.result
-                                    Log.d("LoginAdmin", "🟢 Firebase token: $token")
 
                                     val sharedPref = getSharedPreferences("admin_data", Context.MODE_PRIVATE)
                                     sharedPref.edit().apply {
@@ -116,6 +104,7 @@ class LoginAdminActivity : AppCompatActivity() {
                                         apply()
                                     }
 
+                                    // 🟢 Wyślij token na serwer
                                     updateFirebaseToken(userId.toInt(), token)
 
                                     runOnUiThread {
@@ -124,48 +113,39 @@ class LoginAdminActivity : AppCompatActivity() {
                                         finish()
                                     }
                                 } else {
-                                    Log.e("LoginAdmin", "🔴 Nie udało się pobrać tokena Firebase")
                                     Toast.makeText(this@LoginAdminActivity, "Nie udało się pobrać tokena", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         } else {
                             val errorMsg = json.optString("message", "Nieznany błąd logowania")
-                            Log.e("LoginAdmin", "🔴 Logowanie nieudane: $errorMsg")
                             Toast.makeText(this@LoginAdminActivity, errorMsg, Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
-                        Log.e("LoginAdmin", "🔴 Błąd JSON: ${e.localizedMessage}", e)
-                        Toast.makeText(this@LoginAdminActivity, "Błąd JSON: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@LoginAdminActivity, "Błąd przetwarzania danych", Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Log.e("LoginAdmin", "🔴 Błąd odpowiedzi serwera: ${response.errorBody()?.string()}")
                     Toast.makeText(this@LoginAdminActivity, "Błąd odpowiedzi serwera", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<okhttp3.ResponseBody>, t: Throwable) {
-                Log.e("LoginAdmin", "🔴 Błąd połączenia: ${t.localizedMessage}", t)
                 Toast.makeText(this@LoginAdminActivity, "Błąd połączenia: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun updateFirebaseToken(userId: Int, token: String) {
-        Log.d("LoginAdmin", "🟢 Wysyłanie tokena Firebase (userId=$userId): $token")
-
-        apiService.updateFcmToken(userId, token).enqueue(object : Callback<Void> {
+        apiService.updateFcmTokenAdmin(userId, token).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Log.d("LoginAdmin", "🟢 Token Firebase zaktualizowany poprawnie.")
+                    Log.d("LoginAdmin", "🟢 Token Firebase zaktualizowany na serwerze.")
                 } else {
                     Log.e("LoginAdmin", "🔴 Błąd przy aktualizacji tokenu: ${response.code()}")
-                    Toast.makeText(this@LoginAdminActivity, "Błąd przy aktualizacji tokenu", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("LoginAdmin", "🔴 Błąd połączenia z aktualizacją tokenu: ${t.message}", t)
-                Toast.makeText(this@LoginAdminActivity, "Błąd połączenia z aktualizacją tokenu", Toast.LENGTH_SHORT).show()
+                Log.e("LoginAdmin", "🔴 Błąd połączenia przy aktualizacji tokenu", t)
             }
         })
     }
